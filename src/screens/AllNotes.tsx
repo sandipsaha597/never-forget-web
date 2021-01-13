@@ -3,7 +3,7 @@ import { AppContext } from "../AppContext/AppContext";
 import { format, sub } from "date-fns";
 import { isAnyNoteActiveFunc, isRecycleBinEmptyFunc } from "../util/util";
 import Dropdown from "../widgets/Dropdown";
-// import { schedulePushNotification } from "./AddNote";
+import { schedulePushNotification } from "./AddNote";
 import box from "../assets/icons/box.svg";
 import calender from "../assets/icons/calendar.svg";
 import deleteIcon from "../assets/icons/delete.svg";
@@ -47,13 +47,13 @@ export default function AllNotes(props: {
       if (type === "restore") {
         tempAllNotes[index].delete = false;
         setAllNotes(tempAllNotes);
-        // schedulePushNotification(note, false, note.title);
+        schedulePushNotification(note, false, note.title);
         setIsAnyNoteActive(true);
         isRecycleBinEmptyFunc(tempAllNotes, setIsRecycleBinEmpty);
       } else {
         tempAllNotes[index].delete = true;
         setAllNotes(tempAllNotes);
-        // schedulePushNotification(note, "delete", "");
+        schedulePushNotification(note, "delete", "");
         isAnyNoteActiveFunc(allNotes, setIsAnyNoteActive);
         setIsRecycleBinEmpty(false);
       }
@@ -69,7 +69,6 @@ export default function AllNotes(props: {
   };
 
   const filter = (val: any) => {
-    console.log("val", val);
     const tempAllNotes: any = [...allNotes];
     if (
       val.subject === "All" &&
@@ -97,11 +96,6 @@ export default function AllNotes(props: {
     setSubjectFilterSelected(val.subject);
     setSearchText(val.searchText);
   };
-
-  useEffect(() => {
-    console.log(navigator);
-    console.log(navigator.serviceWorker);
-  }, []);
 
   useEffect(() => {
     // if (Notification.permission === "granted") {

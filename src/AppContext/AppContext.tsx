@@ -119,12 +119,21 @@ export function AppProvider(props: any) {
       },
     },
   };
+
+  const closeAllNotifications = async () => {
+    const reg = await navigator.serviceWorker.getRegistration();
+    const notifications = await reg?.getNotifications({
+      // @ts-ignore
+      includeTriggered: true,
+    });
+    notifications?.forEach((notification) => notification.close());
+  };
   // localStorage.removeItem("knowSpacedRepetition");
   // localStorage.removeItem("firstNote");
   // localStorage.removeItem("allNotes");
+  // closeAllNotifications()
   // localStorage.removeItem("isAnyNoteActive");
   // localStorage.removeItem("isRecycleBinEmpty");
-  // cancelAllScheduledNotifications();
   // localStorage.removeItem('subs')
   // localStorage.removeItem('animations')
 

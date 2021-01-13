@@ -34,7 +34,7 @@ import Settings, { PrivacyPolicy, Credits } from "./screens/Settings";
 // import AddNote from "./screens/AddNote";
 // import Modal from "./widgets/Modal";
 // import Settings from "./screens/Settings";
-// import { add, differenceInSeconds, startOfDay } from "date-fns";
+import { add, differenceInSeconds, startOfDay } from "date-fns";
 // import { AppProvider, AppContext, EnumSpacedRepetition } from "./AppContext/AppContext";
 
 export default function App() {
@@ -90,32 +90,9 @@ const Main = () => {
   //     }, 1000);
   //   }
   // }, [knowSpacedRepetition]);
-
-  // useEffect(() => {
-  //   if (isAnyNoteActive) {
-  //     Notifications.cancelScheduledNotificationAsync("SS-EmptyNoteBox");
-  //   } else {
-  //     Notifications.getAllScheduledNotificationsAsync().then((v) => {
-  //       const notificationExist = v.find((v2) =>
-  //         v2.identifier.startsWith("SS-")
-  //       );
-  //       if (!notificationExist) {
-  //         const trigger = differenceInSeconds(
-  //           add(startOfDay(new Date()), { days: 1, hours: 6 }),
-  //           new Date()
-  //         );
-  //         Notifications.scheduleNotificationAsync({
-  //           content: {
-  //             title: "Your Note box is empty 📁",
-  //             body: "Add notes so you Never Forget what's important to you!",
-  //           },
-  //           identifier: "SS-EmptyNoteBox",
-  //           trigger: { seconds: trigger },
-  //         });
-  //       }
-  //     });
-  //   }
-  // }, [isAnyNoteActive]);
+  useEffect(() => {
+    noNotesNotification(isAnyNoteActive);
+  }, [isAnyNoteActive]);
 
   const location = useLocation();
   return (
@@ -127,10 +104,6 @@ const Main = () => {
         <div>
           <Routes>
             <Route path='/' element={<KnowSpacedRepetition />} />
-            <Route
-              path='/what-is-spaced-repetition'
-              element={<VideoScreen />}
-            />
           </Routes>
         </div>
       ) : (
@@ -279,3 +252,42 @@ const Main = () => {
   );
 };
 // fontFamily: "staatliches-regular",
+
+const noNotesNotification = async (isAnyNoteActive: boolean) => {
+  const reg = await navigator.serviceWorker.getRegistration();
+  const allNotifications = await reg?.getNotifications({
+    // @ts-ignore
+    includeTriggered: true,
+  });
+  const noNotesNotification = allNotifications?.find(
+    (v) => v.tag === "SS-EmptyNoteBox"
+  );
+  if (isAnyNoteActive) {
+    noNotesNotification?.close();
+  } else if (isAnyNoteActive === false) {
+    if (!noNotesNotification) {
+      const trigger = differenceInSeconds(
+        add(startOfDay(new Date()), { days: 1, hours: 6 }),
+        new Date()
+      );
+      Notification.requestPermission().then((permission) => {
+        if (permission !== "granted") {
+          alert("you need to allow push notifications");
+        } else {
+          reg?.showNotification("Your Note box is empty 📁", {
+            tag: "SS-EmptyNoteBox", // a unique ID
+            body: "Add notes so you Never Forget what's important to you!", // content of the push notification
+            // @ts-ignore
+            // showTrigger: new TimestampTrigger(new Date().getTime() + trigger), // set the time for the push notification
+            showTrigger: new TimestampTrigger(new Date().getTime() + trigger), // set the time for the push notification
+            data: {
+              url: window.location.href, // pass the current url to the notification
+            },
+            badge: "../assets/icons/done.svg",
+            icon: "../assets/icons/done.svg",
+          });
+        }
+      });
+    }
+  }
+};

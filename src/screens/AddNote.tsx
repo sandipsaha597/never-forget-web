@@ -116,7 +116,7 @@ export default function AddNote(props: {
       noteAdded();
     }, 10);
 
-    // schedulePushNotification(note, false, title);
+    schedulePushNotification(note, false, title);
 
     setTimeout(() => {
       setTitle("");
@@ -139,7 +139,7 @@ export default function AddNote(props: {
     let tempAllNotes = [...allNotes];
     const note = { ...tempAllNotes[editNoteNumber] };
     if (note.title !== title) {
-      // schedulePushNotification(note, "edit", title);
+      schedulePushNotification(note, "edit", title);
     }
     tempAllNotes[editNoteNumber].title = title;
     tempAllNotes[editNoteNumber].desc = desc;
@@ -308,105 +308,117 @@ export default function AddNote(props: {
   );
 }
 
-// export async function schedulePushNotification(
-//   note: any,
-//   type: string | boolean,
-//   title: string
-// ) {
-//   for (let i = note.revisionNumber + 1; i < note.revisions.length; i++) {
-//     // for (let i = note.revisionNumber + 1; i < note.revisionNumber + 2; i++) {
-//     Notifications.getAllScheduledNotificationsAsync().then(
-//       (allNotifications) => {
-//         const revisionDate = new Date(note.revisions[i]);
-//         const notificationObj = allNotifications.find(
-//           (v) => v.identifier === format(revisionDate, "dd-MM-yyyy")
-//         );
-//         let body = "raw";
-//         if (notificationObj) {
-//           if (type === "delete") {
-//             if (
-//               notificationObj?.content.body?.includes(
-//                 "🗒️ " + note.title + " 📖" + "\n"
-//               )
-//             ) {
-//               body = notificationObj?.content.body?.replace(
-//                 "🗒️ " + note.title + " 📖" + "\n",
-//                 ""
-//               );
-//             } else if (
-//               notificationObj?.content.body?.includes(
-//                 "\n" + "🗒️ " + note.title + " 📖"
-//               )
-//             ) {
-//               body = notificationObj?.content.body?.replace(
-//                 "\n" + "🗒️ " + note.title + " 📖",
-//                 ""
-//               );
-//             } else if (
-//               notificationObj?.content.body?.includes(
-//                 "🗒️ " + note.title + " 📖"
-//               )
-//             ) {
-//               body = notificationObj?.content.body?.replace(
-//                 "🗒️ " + note.title + " 📖",
-//                 ""
-//               );
-//             }
-//           } else if (type === "edit") {
-//             if (
-//               notificationObj?.content.body?.includes(
-//                 "🗒️ " + note.title + " 📖" + "\n"
-//               )
-//             ) {
-//               body = notificationObj?.content.body?.replace(
-//                 "🗒️ " + note.title + " 📖" + "\n",
-//                 "🗒️ " + title + " 📖" + "\n"
-//               );
-//             } else if (
-//               notificationObj?.content.body?.includes(
-//                 "\n" + "🗒️ " + note.title + " 📖"
-//               )
-//             ) {
-//               body = notificationObj?.content.body?.replace(
-//                 "\n" + "🗒️ " + note.title + " 📖",
-//                 "\n" + "🗒️ " + title + " 📖"
-//               );
-//             } else if (
-//               notificationObj?.content.body?.includes(
-//                 "🗒️ " + note.title + " 📖"
-//               )
-//             ) {
-//               body = notificationObj?.content.body?.replace(
-//                 "🗒️ " + note.title + " 📖",
-//                 "🗒️ " + title + " 📖"
-//               );
-//             }
-//           } else {
-//             body = "🗒️ " + title + " 📖" + "\n" + notificationObj.content.body;
-//           }
-//         } else if (!type) {
-//           body = "🗒️ " + title + " 📖";
-//         }
+export async function schedulePushNotification(
+  note: any,
+  type: string | boolean,
+  title: string
+) {
+  // for (let i = note.revisionNumber + 1; i < note.revisionNumber + 2; i++) {
+  const reg = await navigator.serviceWorker.getRegistration();
+  const allNotifications = await reg?.getNotifications({
+    // @ts-ignore
+    includeTriggered: true,
+  });
+  for (let i = note.revisionNumber + 1; i < note.revisions.length; i++) {
+    const revisionDate = new Date(note.revisions[i]);
+    const notificationObj = allNotifications?.find(
+      (v) => v.tag === format(revisionDate, "dd-MM-yyyy")
+    );
+    let body = "raw";
+    if (notificationObj) {
+      const notificationObjBody = notificationObj?.body
+      if (type === "delete") {
+        if (
+          notificationObjBody.includes("🗒️ " + note.title + " 📖" + "\n")
+        ) {
+          body = notificationObjBody.replace(
+            "🗒️ " + note.title + " 📖" + "\n",
+            ""
+          );
+        } else if (
+          notificationObjBody.includes("\n" + "🗒️ " + note.title + " 📖")
+        ) {
+          body = notificationObjBody.replace(
+            "\n" + "🗒️ " + note.title + " 📖",
+            ""
+          );
+        } else if (
+          notificationObjBody.includes("🗒️ " + note.title + " 📖")
+        ) {
+          body = notificationObjBody.replace("🗒️ " + note.title + " 📖", "");
+        }
+      } else if (type === "edit") {
+        if (
+          notificationObjBody.includes("🗒️ " + note.title + " 📖" + "\n")
+        ) {
+          body = notificationObjBody.replace(
+            "🗒️ " + note.title + " 📖" + "\n",
+            "🗒️ " + title + " 📖" + "\n"
+          );
+        } else if (
+          notificationObjBody.includes("\n" + "🗒️ " + note.title + " 📖")
+        ) {
+          body = notificationObjBody.replace(
+            "\n" + "🗒️ " + note.title + " 📖",
+            "\n" + "🗒️ " + title + " 📖"
+          );
+        } else if (
+          notificationObjBody.includes("🗒️ " + note.title + " 📖")
+        ) {
+          body = notificationObjBody.replace(
+            "🗒️ " + note.title + " 📖",
+            "🗒️ " + title + " 📖"
+          );
+        }
+      } else {
+        body = "🗒️ " + title + " 📖" + "\n" + notificationObjBody;
+      }
+    } else if (!type) {
+      body = "🗒️ " + title + " 📖";
+    }
+    console.log(format(revisionDate, "dd-MM-yyyy"));
+    const trigger =
+      body === ""
+        ? 'close'
+        : differenceInSeconds(
+            // add(startOfDay(new Date()), { days: 0, hours: 13, minutes: 11 }),
+            // add(new Date(note.revisions[0]), { hours: 14, minutes: 18 }),
+            add(revisionDate, { hours: 6 }),
+            new Date()
+          ) * 1000;
 
-//         const trigger =
-//           body === ""
-//             ? -100
-//             : differenceInSeconds(
-//                 // add(startOfDay(new Date()), { days: 0, hours: 13, minutes: 11 }),
-//                 // add(new Date(note.revisions[0]), { hours: 14, minutes: 18 }),
-//                 add(revisionDate, { hours: 6 }),
-//                 new Date()
-//               );
-//         Notifications.scheduleNotificationAsync({
-//           content: {
-//             title: i + "Rediv your notes, so you Never Forget them! 📔",
-//             body: body,
-//           },
-//           identifier: format(revisionDate, "dd-MM-yyyy"),
-//           trigger: { seconds: trigger },
-//           // trigger: { seconds: 30 * i },
-//         });
-//       }
-//     );
-//   }
-// }
+    if (trigger === 'close')  {
+      notificationObj?.close()
+    } else if(Math.sign(trigger) !== -1) {
+      notificationObj?.close()
+      Notification.requestPermission().then((permission) => {
+        if (permission !== "granted") {
+          alert("you need to allow push notifications");
+        } else {
+          reg?.showNotification("hello", {
+            tag: format(revisionDate, "dd-MM-yyyy"), // a unique ID
+            body: body, // content of the push notification
+            // @ts-ignore
+            // showTrigger: new TimestampTrigger(new Date().getTime() + trigger), // set the time for the push notification
+            showTrigger: new TimestampTrigger(new Date().getTime() + trigger), // set the time for the push notification
+            data: {
+              url: window.location.href, // pass the current url to the notification
+            },
+            badge: "../assets/icons/done.svg",
+            icon: "../assets/icons/done.svg",
+          });
+        }
+      });
+    }
+    // Notifications.scheduleNotificationAsync({
+    //   content: {
+    //     title: "Review your notes, so you Never Forget them! 📔",
+    //     body: body,
+    //   },
+    //   identifier: format(revisionDate, "dd-MM-yyyy"),
+    //   trigger: { seconds: trigger },
+    //   // trigger: { seconds: 30 * i },
+    // });
+  } //
+}
+

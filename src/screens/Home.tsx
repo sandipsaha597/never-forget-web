@@ -32,6 +32,7 @@ export default function Home() {
   const [notesToRevise, setNotesToRevise] = useState<boolean>(true);
   const currentRewardMsg = useRef("Well done");
   const [rewardIcon, setRewardIcon] = useState<any>(null);
+  const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
     currentRewardMsg.current =
@@ -94,8 +95,13 @@ export default function Home() {
         }, 1000 * 60);
       } else {
         setTimeout(() => {
-          console.log("refresh Home");
-          setNotesToRevise(!!haveNotesToRevise(allNotes));
+          setRefreshing(true);
+          setTimeout(() => {
+            setNotesToRevise(!!haveNotesToRevise(allNotes));
+            setTimeout(() => {
+              setRefreshing(false);
+            }, 1000);
+          }, 1000);
         }, refreshTime);
       }
     };
@@ -103,7 +109,7 @@ export default function Home() {
   }, []);
 
   return (
-    <>
+    <div style={{ position: "relative" }}>
       {isAnyNoteActive && allNotes.length !== 0 ? (
         <div
           style={{
@@ -203,9 +209,47 @@ export default function Home() {
       ) : (
         <NoNotes />
       )}
-    </>
+      {refreshing && <Refreshing />}
+    </div>
   );
 }
+
+const Refreshing = () => {
+  const [count, setCount] = useState(3);
+
+  useEffect(() => {
+    setTimeout(() => {
+      setCount(2);
+    }, 1000);
+
+    setTimeout(() => {
+      setCount(1);
+    }, 2000);
+
+    setTimeout(() => {
+      setCount(0);
+    }, 3000);
+  }, []);
+  return (
+    <div
+      style={{
+        width: "100%",
+        height: "100vh",
+        backgroundColor: "rgba(0,0,0,.4)",
+        position: "absolute",
+        top: 0,
+        left: 0,
+        display: "flex",
+        flexFlow: "column",
+        justifyContent: "center",
+        alignItems: "center",
+      }}
+    >
+      <p style={{ fontSize: 20 }}>Refreshing...</p>
+      <p style={{ fontSize: 160, margin: 0 }}>{count}</p>
+    </div>
+  );
+};
 
 const ReviewBox = (props: {
   note: IAllNotes;
