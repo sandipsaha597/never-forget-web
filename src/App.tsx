@@ -120,128 +120,119 @@ const Main = () => {
         //   />
         // </Stack.Navigator>
         <>
-          <div
-            style={{
-              display: "flex",
-              width: "100%",
-            }}
-          >
+          {location.pathname !== "/what-is-spaced-repetition" && (
             <div
-              className='nav'
               style={{
-                width: "20%",
-                height: "100vh",
-                background: "#e5e5e3",
-                position: "sticky",
-                top: 0,
-                left: 0,
+                display: "flex",
+                width: "100%",
               }}
             >
-              <Link
-                className='nav-link'
+              <nav
+                className='nav'
                 style={{
-                  display: "flex",
-                  alignItems: "center",
-                  width: "100%",
-                  boxSizing: "border-box",
-                  textDecoration: "none",
-                  color: location.pathname === "/" ? "blue" : "#000",
-                  padding: "10px 20px",
+                  width: "20%",
+                  height: "100vh",
+                  background: "#e5e5e3",
+                  position: "sticky",
+                  top: 0,
+                  left: 0,
                 }}
-                to='/'
               >
-                <img
-                  style={{ width: "21px", marginRight: "10px" }}
-                  src={home}
-                  alt=''
-                />{" "}
-                <span>Home</span>
-              </Link>
-              <Link
-                className='nav-link'
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  width: "100%",
-                  boxSizing: "border-box",
-                  textDecoration: "none",
-                  color: location.pathname === "/all-notes" ? "blue" : "#000",
-                  padding: "10px 20px",
-                }}
-                to='/all-notes'
-              >
-                <img
-                  style={{ width: "21px", marginRight: "10px" }}
-                  src={notes}
-                  alt=''
-                />
-                <span>All Notes</span>
-              </Link>
-              <Link
-                className='nav-link'
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  width: "100%",
-                  boxSizing: "border-box",
-                  textDecoration: "none",
-                  color: location.pathname === "/settings" ? "blue" : "#000",
-                  padding: "10px 20px",
-                }}
-                to='/settings'
-              >
-                <img
-                  style={{ width: "21px", marginRight: "10px" }}
-                  src={settings}
-                  alt=''
-                />
-                <span>Settings</span>
-              </Link>
-            </div>
-            <div style={{ width: "80%", paddingBottom: "450px" }}>
-              {(location.pathname === "/" ||
-                location.pathname === "/all-notes") && (
-                <AddNote
-                  editNoteNumber={editNoteNumber}
-                  setEditNoteNumber={() => false}
-                  noteAdded={() => {
-                    setRewardMsgShow(true);
-                    setTimeout(() => {
-                      setRewardMsgShow(false);
-                    }, rewardMsgTimeoutTime + 500);
+                <Link
+                  className='nav-link'
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    width: "100%",
+                    boxSizing: "border-box",
+                    textDecoration: "none",
+                    color: location.pathname === "/" ? "blue" : "#000",
+                    padding: "10px 20px",
                   }}
-                />
-              )}
-              <Routes>
-                <Route path='/' element={<Home />} />
-                <Route
-                  path='/all-notes'
-                  element={<AllNotes setEditNoteNumber={setEditNoteNumber} />}
-                />
-                <Route path='/settings' element={<Settings />} />
-                <Route path='/recycle-bin' element={<AllNotes recycleBin />} />
-                <Route path='/privacy-policy' element={<PrivacyPolicy />} />
-                <Route path='/credits' element={<Credits />} />
-              </Routes>
+                  to='/'
+                >
+                  <img
+                    style={{ width: "21px", marginRight: "10px" }}
+                    src={home}
+                    alt=''
+                  />{" "}
+                  <span>Home</span>
+                </Link>
+                <Link
+                  className='nav-link'
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    width: "100%",
+                    boxSizing: "border-box",
+                    textDecoration: "none",
+                    color: location.pathname === "/all-notes" ? "blue" : "#000",
+                    padding: "10px 20px",
+                  }}
+                  to='/all-notes'
+                >
+                  <img
+                    style={{ width: "21px", marginRight: "10px" }}
+                    src={notes}
+                    alt=''
+                  />
+                  <span>All Notes</span>
+                </Link>
+                <Link
+                  className='nav-link'
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    width: "100%",
+                    boxSizing: "border-box",
+                    textDecoration: "none",
+                    color: location.pathname === "/settings" ? "blue" : "#000",
+                    padding: "10px 20px",
+                  }}
+                  to='/settings'
+                >
+                  <img
+                    style={{ width: "21px", marginRight: "10px" }}
+                    src={settings}
+                    alt=''
+                  />
+                  <span>Settings</span>
+                </Link>
+              </nav>
+              <div style={{ width: "80%" }}>
+                {(location.pathname === "/" ||
+                  location.pathname === "/all-notes") && (
+                  <AddNote
+                    editNoteNumber={editNoteNumber}
+                    setEditNoteNumber={() => false}
+                    noteAdded={() => {
+                      setRewardMsgShow(true);
+                      setTimeout(() => {
+                        setRewardMsgShow(false);
+                      }, rewardMsgTimeoutTime + 500);
+                    }}
+                  />
+                )}
+                <Routes>
+                  <Route path='/' element={<Home />} />
+                  <Route
+                    path='/all-notes'
+                    element={<AllNotes setEditNoteNumber={setEditNoteNumber} />}
+                  />
+                  <Route path='/settings' element={<Settings />} />
+                  <Route
+                    path='/recycle-bin'
+                    element={<AllNotes recycleBin />}
+                  />
+                  <Route path='/privacy-policy' element={<PrivacyPolicy />} />
+                  <Route path='/credits' element={<Credits />} />
+                </Routes>
+              </div>
             </div>
-          </div>
-          {/* <View
-              style={{
-                borderRadius: 50,
-                position: "absolute",
-                bottom: 50,
-                right: 10,
-                // transform: [{ translateX: -28 }],
-              }}
-            >
-              <TouchableOpacity onPress={() => showAddNote(0)}>
-                <Ionicons name='ios-add-circle' size={70} color='#3178c6' />
-              </TouchableOpacity>
-            </View> */}
+          )}
           {rewardMsgShow && (
             <Modal
               text={rewardMsgs[Math.floor(Math.random() * rewardMsgs.length)]}
-              noChat
               center
               color='#3178c6'
             />
@@ -266,10 +257,11 @@ const noNotesNotification = async (isAnyNoteActive: boolean) => {
     noNotesNotification?.close();
   } else if (isAnyNoteActive === false) {
     if (!noNotesNotification) {
-      const trigger = differenceInSeconds(
-        add(startOfDay(new Date()), { days: 1, hours: 6 }),
-        new Date()
-      );
+      const trigger =
+        differenceInSeconds(
+          add(startOfDay(new Date()), { days: 1, hours: 6 }),
+          new Date()
+        ) * 1000;
       Notification.requestPermission().then((permission) => {
         if (permission !== "granted") {
           alert("you need to allow push notifications");
@@ -279,7 +271,7 @@ const noNotesNotification = async (isAnyNoteActive: boolean) => {
             body: "Add notes so you Never Forget what's important to you!", // content of the push notification
             // @ts-ignore
             // showTrigger: new TimestampTrigger(new Date().getTime() + trigger), // set the time for the push notification
-            showTrigger: new TimestampTrigger(new Date().getTime() + trigger), // set the time for the push notification
+            showTrigger: new TimestampTrigger(new Date().getTime() + 10), // set the time for the push notification
             data: {
               url: window.location.href, // pass the current url to the notification
             },

@@ -6,6 +6,7 @@ import { v4 as uuidv4 } from "uuid";
 import Modal from "../widgets/Modal";
 import done from "../assets/icons/done.svg";
 import leftArrow from "../assets/icons/left-arrow.svg";
+import { logoInBase64 } from "../util/util";
 
 export default function AddNote(props: {
   editNoteNumber: number;
@@ -94,7 +95,7 @@ export default function AddNote(props: {
 
     const tempAllNotes = [...allNotes];
 
-    // for (let i = 0; i < 10; i++) {
+    // for (let i = 0; i < 1000; i++) {
     const note = {
       id: uuidv4(),
       title: title,
@@ -104,7 +105,7 @@ export default function AddNote(props: {
       pattern,
       revisions: allRevisions,
       revisionNumber: 0,
-      delete: false,
+      deleted: false,
       show: true,
     };
     tempAllNotes.unshift(note);
@@ -326,11 +327,9 @@ export async function schedulePushNotification(
     );
     let body = "raw";
     if (notificationObj) {
-      const notificationObjBody = notificationObj?.body
+      const notificationObjBody = notificationObj?.body;
       if (type === "delete") {
-        if (
-          notificationObjBody.includes("🗒️ " + note.title + " 📖" + "\n")
-        ) {
+        if (notificationObjBody.includes("🗒️ " + note.title + " 📖" + "\n")) {
           body = notificationObjBody.replace(
             "🗒️ " + note.title + " 📖" + "\n",
             ""
@@ -342,15 +341,11 @@ export async function schedulePushNotification(
             "\n" + "🗒️ " + note.title + " 📖",
             ""
           );
-        } else if (
-          notificationObjBody.includes("🗒️ " + note.title + " 📖")
-        ) {
+        } else if (notificationObjBody.includes("🗒️ " + note.title + " 📖")) {
           body = notificationObjBody.replace("🗒️ " + note.title + " 📖", "");
         }
       } else if (type === "edit") {
-        if (
-          notificationObjBody.includes("🗒️ " + note.title + " 📖" + "\n")
-        ) {
+        if (notificationObjBody.includes("🗒️ " + note.title + " 📖" + "\n")) {
           body = notificationObjBody.replace(
             "🗒️ " + note.title + " 📖" + "\n",
             "🗒️ " + title + " 📖" + "\n"
@@ -362,9 +357,7 @@ export async function schedulePushNotification(
             "\n" + "🗒️ " + note.title + " 📖",
             "\n" + "🗒️ " + title + " 📖"
           );
-        } else if (
-          notificationObjBody.includes("🗒️ " + note.title + " 📖")
-        ) {
+        } else if (notificationObjBody.includes("🗒️ " + note.title + " 📖")) {
           body = notificationObjBody.replace(
             "🗒️ " + note.title + " 📖",
             "🗒️ " + title + " 📖"
@@ -376,10 +369,9 @@ export async function schedulePushNotification(
     } else if (!type) {
       body = "🗒️ " + title + " 📖";
     }
-    console.log(format(revisionDate, "dd-MM-yyyy"));
     const trigger =
       body === ""
-        ? 'close'
+        ? "close"
         : differenceInSeconds(
             // add(startOfDay(new Date()), { days: 0, hours: 13, minutes: 11 }),
             // add(new Date(note.revisions[0]), { hours: 14, minutes: 18 }),
@@ -387,26 +379,29 @@ export async function schedulePushNotification(
             new Date()
           ) * 1000;
 
-    if (trigger === 'close')  {
-      notificationObj?.close()
-    } else if(Math.sign(trigger) !== -1) {
-      notificationObj?.close()
+    if (trigger === "close") {
+      notificationObj?.close();
+    } else if (Math.sign(trigger) !== -1) {
+      notificationObj?.close();
       Notification.requestPermission().then((permission) => {
         if (permission !== "granted") {
           alert("you need to allow push notifications");
         } else {
-          reg?.showNotification("hello", {
-            tag: format(revisionDate, "dd-MM-yyyy"), // a unique ID
-            body: body, // content of the push notification
-            // @ts-ignore
-            // showTrigger: new TimestampTrigger(new Date().getTime() + trigger), // set the time for the push notification
-            showTrigger: new TimestampTrigger(new Date().getTime() + trigger), // set the time for the push notification
-            data: {
-              url: window.location.href, // pass the current url to the notification
-            },
-            badge: "../assets/icons/done.svg",
-            icon: "../assets/icons/done.svg",
-          });
+          reg?.showNotification(
+            "Review your notes, so you Never Forget them! 📔",
+            {
+              tag: format(revisionDate, "dd-MM-yyyy"), // a unique ID
+              body: body, // content of the push notification
+              // @ts-ignore
+              // showTrigger: new TimestampTrigger(new Date().getTime() + trigger), // set the time for the push notification
+              showTrigger: new TimestampTrigger(new Date().getTime() + trigger), // set the time for the push notification
+              data: {
+                url: window.location.href, // pass the current url to the notification
+              },
+              badge: logoInBase64,
+              icon: logoInBase64,
+            }
+          );
         }
       });
     }
@@ -421,4 +416,3 @@ export async function schedulePushNotification(
     // });
   } //
 }
-

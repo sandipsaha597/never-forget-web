@@ -72,54 +72,33 @@ export function AppProvider(props: any) {
           console.log("err", err);
         }
       },
-      setKnowSpacedRepetition(values: EnumSpacedRepetition) {
-        try {
-          localStorage.setItem("knowSpacedRepetition", JSON.stringify(values));
-          setKnowSpacedRepetition(values);
-        } catch (err) {
-          alert(err);
-          console.log("err", err);
-        }
+      setSubs(val: { id: string; title: string }[]) {
+        saveAndUpdate("subs", setSubs, val);
       },
-      setSubs(values: { id: string; title: string }[]) {
-        try {
-          localStorage.setItem("subs", JSON.stringify(values));
-          setSubs(values);
-        } catch (err) {
-          alert(err);
-          console.log("err", err);
-        }
+      setKnowSpacedRepetition(val: EnumSpacedRepetition) {
+        saveAndUpdate("knowSpacedRepetition", setKnowSpacedRepetition, val);
       },
       setIsAnyNoteActive(val: boolean) {
-        try {
-          localStorage.setItem("isAnyNoteActive", JSON.stringify(val));
-          setIsAnyNoteActive(val);
-        } catch (err) {
-          alert(err);
-          console.log("err", err);
-        }
+        saveAndUpdate("isAnyNoteActive", setIsAnyNoteActive, val);
       },
       setIsRecycleBinEmpty(val: boolean) {
-        try {
-          localStorage.setItem("isRecycleBinEmpty", JSON.stringify(val));
-          setIsRecycleBinEmpty(val);
-        } catch (err) {
-          alert(err);
-          console.log("err", err);
-        }
+        saveAndUpdate("isRecycleBinEmpty", setIsRecycleBinEmpty, val);
       },
       setAnimations(val: "On" | "Off") {
-        try {
-          localStorage.setItem("animations", JSON.stringify(val));
-          setAnimations(val);
-        } catch (err) {
-          alert(err);
-          console.log("err", err);
-        }
+        saveAndUpdate("animations", setAnimations, val);
       },
     },
   };
 
+  const saveAndUpdate = async (save: string, update: any, value: any) => {
+    try {
+      await localStorage.setItem(save, JSON.stringify(value));
+      update(value);
+    } catch (err) {
+      alert(err);
+      console.log("err", err);
+    }
+  };
   const closeAllNotifications = async () => {
     const reg = await navigator.serviceWorker.getRegistration();
     const notifications = await reg?.getNotifications({
@@ -131,11 +110,11 @@ export function AppProvider(props: any) {
   // localStorage.removeItem("knowSpacedRepetition");
   // localStorage.removeItem("firstNote");
   // localStorage.removeItem("allNotes");
-  // closeAllNotifications()
+  // closeAllNotifications();
   // localStorage.removeItem("isAnyNoteActive");
   // localStorage.removeItem("isRecycleBinEmpty");
-  // localStorage.removeItem('subs')
-  // localStorage.removeItem('animations')
+  // localStorage.removeItem("subs");
+  // localStorage.removeItem("animations");
 
   // contextValue.actions.setSubs([
   //   "English",
@@ -214,6 +193,6 @@ export interface IAllNotes {
   pattern: number[];
   revisions: any;
   revisionNumber: number;
-  delete: boolean;
+  deleted: boolean;
   show: boolean;
 }

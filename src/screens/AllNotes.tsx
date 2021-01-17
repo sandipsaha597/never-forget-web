@@ -1,9 +1,12 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { AppContext } from "../AppContext/AppContext";
-import { format, sub } from "date-fns";
+import { format } from "date-fns";
+import { Masonry } from "masonic";
+
 import { isAnyNoteActiveFunc, isRecycleBinEmptyFunc } from "../util/util";
 import Dropdown from "../widgets/Dropdown";
 import { schedulePushNotification } from "./AddNote";
+
 import box from "../assets/icons/box.svg";
 import calender from "../assets/icons/calendar.svg";
 import deleteIcon from "../assets/icons/delete.svg";
@@ -15,7 +18,58 @@ import leftArrow from "../assets/icons/left-arrow.svg";
 import restore from "../assets/icons/restore.svg";
 import recycleBinIcon from "../assets/icons/recycle-bin.svg";
 import logo from "../assets/NFicon2.png";
-
+export const placeholderArray = [
+  { placeholder: true },
+  { placeholder: true },
+  { placeholder: true },
+  { placeholder: true },
+  { placeholder: true },
+  { placeholder: true },
+  { placeholder: true },
+  { placeholder: true },
+  { placeholder: true },
+  { placeholder: true },
+  { placeholder: true },
+  { placeholder: true },
+  { placeholder: true },
+  { placeholder: true },
+  { placeholder: true },
+  { placeholder: true },
+  { placeholder: true },
+  { placeholder: true },
+  { placeholder: true },
+  { placeholder: true },
+  { placeholder: true },
+  { placeholder: true },
+  { placeholder: true },
+  { placeholder: true },
+  { placeholder: true },
+  { placeholder: true },
+  { placeholder: true },
+  { placeholder: true },
+  { placeholder: true },
+  { placeholder: true },
+  { placeholder: true },
+  { placeholder: true },
+  { placeholder: true },
+  { placeholder: true },
+  { placeholder: true },
+  { placeholder: true },
+  { placeholder: true },
+  { placeholder: true },
+  { placeholder: true },
+  { placeholder: true },
+  { placeholder: true },
+  { placeholder: true },
+  { placeholder: true },
+  { placeholder: true },
+  { placeholder: true },
+  { placeholder: true },
+  { placeholder: true },
+  { placeholder: true },
+  { placeholder: true },
+  { placeholder: true },
+];
 export default function AllNotes(props: {
   recycleBin?: boolean;
   setEditNoteNumber?: (index: number) => void;
@@ -23,7 +77,7 @@ export default function AllNotes(props: {
   const { recycleBin, setEditNoteNumber } = props;
   const [subjectFilterSelected, setSubjectFilterSelected] = useState("All");
   const [searchText, setSearchText] = useState<any>(false);
-  const TextInputRef = useRef<any>();
+  const [notesToShow, setNotesToShow] = useState<any>([]);
   const {
     states: { allNotes, subs, isAnyNoteActive, isRecycleBinEmpty },
     actions: { setAllNotes, setIsAnyNoteActive, setIsRecycleBinEmpty },
@@ -35,26 +89,46 @@ export default function AllNotes(props: {
     },
     ...subs,
   ];
+  useEffect(() => {
+    const tempNotesToShow: any = [];
+
+    allNotes.forEach((v: any, i: any) => {
+      v.index = i;
+      if (recycleBin) {
+        if (v.deleted && v.show) {
+          tempNotesToShow.push(v);
+        }
+      } else {
+        if (!v.deleted && v.show) {
+          tempNotesToShow.push(v);
+        }
+      }
+    });
+
+    tempNotesToShow.push(...placeholderArray);
+    setNotesToShow(tempNotesToShow);
+  }, [recycleBin, allNotes]);
 
   const deleteNote = (index: any, id: any, note: any, type?: string) => {
     let tempAllNotes = [...allNotes];
     // tempAllNotes = tempAllNotes.filter((v) => v.id !== id);
     if (type === "permanentDelete") {
+      tempAllNotes[index].deleted = false;
       tempAllNotes.splice(index, 1);
       setAllNotes(tempAllNotes);
       isRecycleBinEmptyFunc(tempAllNotes, setIsRecycleBinEmpty);
     } else {
       if (type === "restore") {
-        tempAllNotes[index].delete = false;
+        tempAllNotes[index].deleted = false;
         setAllNotes(tempAllNotes);
         schedulePushNotification(note, false, note.title);
         setIsAnyNoteActive(true);
         isRecycleBinEmptyFunc(tempAllNotes, setIsRecycleBinEmpty);
       } else {
-        tempAllNotes[index].delete = true;
+        tempAllNotes[index].deleted = true;
         setAllNotes(tempAllNotes);
         schedulePushNotification(note, "delete", "");
-        isAnyNoteActiveFunc(allNotes, setIsAnyNoteActive);
+        isAnyNoteActiveFunc(tempAllNotes, setIsAnyNoteActive);
         setIsRecycleBinEmpty(false);
       }
     }
@@ -63,7 +137,7 @@ export default function AllNotes(props: {
   // Empty Recycle bin
   const deleteAll = () => {
     let tempAllNotes = [...allNotes];
-    tempAllNotes = tempAllNotes.filter((v) => v.delete !== true);
+    tempAllNotes = tempAllNotes.filter((v) => v.deleted !== true);
     setAllNotes(tempAllNotes);
     isRecycleBinEmptyFunc(tempAllNotes, setIsRecycleBinEmpty);
   };
@@ -87,7 +161,7 @@ export default function AllNotes(props: {
           (val.subject === "All" || v.subject === val.subject)
         ) {
           v.show = true;
-        } else {
+        } else if (!v.deleted) {
           v.show = false;
         }
       });
@@ -117,7 +191,6 @@ export default function AllNotes(props: {
     //   });
     // }
   }, []);
-
   return (
     <>
       {(isAnyNoteActive && allNotes.length !== 0) ||
@@ -193,62 +266,98 @@ export default function AllNotes(props: {
                 }}
               />
             </div>
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-around",
-                flexFlow: "row wrap",
-                alignItems: "flex-start",
-              }}
-            >
-              {!recycleBin
-                ? allNotes.map((item: any, index: any) =>
-                    !item.delete && item.show ? (
+            {
+              !recycleBin ? (
+                <Masonry
+                  className='masonry'
+                  // Provides the data for our grid items
+                  items={notesToShow}
+                  // Sets the minimum column width to 172px
+                  columnWidth={260}
+                  // Pre-renders 5 windows worth of content
+                  overscanBy={2}
+                  // This is the grid item component
+                  render={(props: any) =>
+                    !props.data.deleted &&
+                    props.data.show &&
+                    !props.data.placeholder ? (
+                      <NoteBox
+                        itemIndex={props.data.index}
+                        editNote={(index) =>
+                          setEditNoteNumber && setEditNoteNumber(index)
+                        }
+                        deleteNote={deleteNote}
+                        {...props}
+                      />
+                    ) : (
                       <div
-                        key={item.id}
                         style={{
-                          border: "2px solid #000",
-                          padding: 10,
-                          borderRadius: 10,
-                          width: "32%",
-                          boxSizing: "border-box",
-                          marginBottom: 20,
+                          height: "200px",
+                          opacity: 0,
+                          pointerEvents: "none",
                         }}
                       >
-                        <NoteBox
-                          note={item}
-                          itemIndex={index}
-                          deleteNote={deleteNote}
-                          editNote={(index) =>
-                            setEditNoteNumber && setEditNoteNumber(index)
-                          }
-                        />
+                        placeholder
                       </div>
-                    ) : null
-                  )
-                : allNotes.map((item: any, index: any) =>
-                    item.delete && item.show ? (
+                    )
+                  }
+                />
+              ) : (
+                <Masonry
+                  // Provides the data for our grid items
+                  items={notesToShow}
+                  // Sets the minimum column width to 172px
+                  columnWidth={260}
+                  // Pre-renders 5 windows worth of content
+                  overscanBy={2}
+                  // This is the grid item component
+                  render={(props: any) =>
+                    props.data.deleted &&
+                    props.data.show &&
+                    !props.data.placeholder ? (
+                      <NoteBox
+                        recycleBin
+                        itemIndex={props.data.index}
+                        deleteNote={deleteNote}
+                        {...props}
+                      />
+                    ) : (
                       <div
-                        key={item.id}
                         style={{
-                          border: "2px solid #000",
-                          padding: 10,
-                          borderRadius: 10,
-                          width: "32%",
-                          boxSizing: "border-box",
-                          marginBottom: 20,
+                          height: "200px",
+                          opacity: 0,
+                          pointerEvents: "none",
                         }}
                       >
-                        <NoteBox
-                          note={item}
-                          itemIndex={index}
-                          deleteNote={deleteNote}
-                          recycleBin
-                        />
+                        placeholder
                       </div>
-                    ) : null
-                  )}
-            </div>
+                    )
+                  }
+                />
+              )
+              // allNotes.map((item: any, index: any) =>
+              //     !item.delete && item.show ? (
+              //       <NoteBox
+              //         note={item}
+              //         itemIndex={index}
+              //         deleteNote={deleteNote}
+              // editNote={(index) =>
+              //   setEditNoteNumber && setEditNoteNumber(index)
+              // }
+              //       />
+              //     ) : null
+              //   )
+              // allNotes.map((item: any, index: any) =>
+              //   item.delete && item.show ? (
+              //     <NoteBox
+              //       note={item}
+              //       itemIndex={index}
+              //       deleteNote={deleteNote}
+              //       recycleBin
+              //     />
+              //   ) : null
+              // )
+            }
           </div>
         )
       ) : (
@@ -277,7 +386,7 @@ export const NoNotes = (props: { source?: any; text?: string }) => {
         backgroundColor: "#fff",
         justifyContent: "center",
         alignItems: "center",
-        height: "calc(100vh - 80px)",
+        height: "calc(100vh - 150px)",
       }}
     >
       <img
@@ -292,15 +401,24 @@ export const NoNotes = (props: { source?: any; text?: string }) => {
 };
 
 const NoteBox = (props: {
-  note: any;
+  data: any;
   itemIndex: number;
   deleteNote: (index: any, id: any, note: any, type?: string) => void;
   editNote?: (index: number) => void;
   recycleBin?: boolean;
 }) => {
-  const { note, itemIndex, deleteNote, editNote, recycleBin } = props;
+  const { data: note, itemIndex, deleteNote, editNote, recycleBin } = props;
   return (
-    <>
+    <div
+      key={note.id}
+      style={{
+        border: "2px solid #000",
+        padding: 10,
+        borderRadius: 10,
+        // boxSizing: "border-box",
+        margin: 10,
+      }}
+    >
       <h2 style={{ fontSize: 30, margin: "0 0 6px 0" }}>{note.title}</h2>
       <div
         style={{
@@ -388,23 +506,27 @@ const NoteBox = (props: {
             <img style={{ height: 32, width: 32 }} src={restore} />
           </button>
         )}
-        <button
-          style={{ alignSelf: "flex-end", marginLeft: 10 }}
-          onMouseDown={() => {
-            if (recycleBin) {
-              deleteNote(itemIndex, note.id, note, "permanentDelete");
-            } else {
-              deleteNote(itemIndex, note.id, note);
-            }
-          }}
-        >
-          {recycleBin ? (
-            <img style={{ width: "30px" }} src={deleteIcon} />
-          ) : (
-            <img style={{ width: "30px" }} src={softDeleteIcon} />
-          )}
-        </button>
+        {!recycleBin && note.deleted ? (
+          <p>Note deleted</p>
+        ) : (
+          <button
+            style={{ alignSelf: "flex-end", marginLeft: 10 }}
+            onMouseDown={() => {
+              if (recycleBin) {
+                deleteNote(itemIndex, note.id, note, "permanentDelete");
+              } else {
+                deleteNote(itemIndex, note.id, note);
+              }
+            }}
+          >
+            {recycleBin ? (
+              <img style={{ width: "30px" }} src={deleteIcon} />
+            ) : (
+              <img style={{ width: "30px" }} src={softDeleteIcon} />
+            )}
+          </button>
+        )}
       </div>
-    </>
+    </div>
   );
 };

@@ -18,8 +18,9 @@ import box from "../assets/icons/box.svg";
 import refresh from "../assets/icons/refresh.svg";
 import rightArrow from "../assets/icons/right-arrow.svg";
 import drawCheckMark from "../assets/icons/draw-check-mark.svg";
-import { NoNotes } from "./AllNotes";
+import { NoNotes, placeholderArray } from "./AllNotes";
 import AddNote from "./AddNote";
+import { Masonry } from "masonic";
 
 const congratsIcons = [fireCracker, fireworks, clapping, trophy];
 
@@ -33,17 +34,40 @@ export default function Home() {
   const currentRewardMsg = useRef("Well done");
   const [rewardIcon, setRewardIcon] = useState<any>(null);
   const [refreshing, setRefreshing] = useState(false);
+  const [notesToShow, setNotesToShow] = useState([]);
+  const {
+    states: { allNotes, isAnyNoteActive },
+    actions: { setAllNotes },
+    constants: { rewardMsgTimeoutTime },
+  } = useContext<any>(AppContext);
 
   useEffect(() => {
     currentRewardMsg.current =
       rewardMsgs[Math.floor(Math.random() * rewardMsgs.length)];
   }, []);
 
-  const {
-    states: { allNotes, isAnyNoteActive },
-    actions: { setAllNotes },
-    constants: { rewardMsgTimeoutTime },
-  } = useContext<any>(AppContext);
+  useEffect(() => {
+    const tempNotesToShow: any = [];
+
+    allNotes.forEach((v: any, i: any) => {
+      v.index = i;
+      if (
+        !v.deleted &&
+        !isFuture(
+          sub(new Date(v.revisions[v.revisionNumber + 1]), {
+            days: date.days,
+            hours: date.hours,
+          })
+        )
+      ) {
+        tempNotesToShow.push(v);
+      }
+    });
+
+    tempNotesToShow.push(...placeholderArray);
+    setNotesToShow(tempNotesToShow);
+  }, [allNotes]);
+  console.log(notesToShow);
 
   useEffect(() => {
     setNotesToRevise(!!haveNotesToRevise(allNotes));
@@ -130,44 +154,49 @@ export default function Home() {
             </>
           )}
           {notesToRevise ? (
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-around",
-                alignItems: "flex-start",
-                flexFlow: "row wrap",
-              }}
-            >
-              {allNotes.map((item: any, index: any) => {
-                return !item.delete &&
-                  !isFuture(
-                    sub(new Date(item.revisions[item.revisionNumber + 1]), {
+            <Masonry
+              className='masonry'
+              // Provides the data for our grid items
+              items={notesToShow}
+              // Sets the minimum column width to 172px
+              columnWidth={260}
+              // Pre-renders 5 windows worth of content
+              overscanBy={2}
+              // This is the grid item component
+              render={(props: any) =>
+                !props.data.placeholder &&
+                !props.data.deleted &&
+                !isFuture(
+                  sub(
+                    new Date(
+                      props.data.revisions[props.data.revisionNumber + 1]
+                    ),
+                    {
                       days: date.days,
                       hours: date.hours,
-                    })
-                  ) ? (
+                    }
+                  )
+                ) ? (
+                  <ReviewBox
+                    itemIndex={props.data.index}
+                    disabled={rewardMsgShow}
+                    note={props.data as IAllNotes}
+                    markAsRevised={markAsRevised}
+                    skip={skip}
+                  />
+                ) : (
                   <div
-                    key={item.id}
                     style={{
-                      border: "2px solid #000",
-                      padding: 10,
-                      borderRadius: 10,
-                      width: "32%",
-                      boxSizing: "border-box",
-                      marginBottom: 20,
+                      height: "200px",
+                      opacity: 0,
+                      pointerEvents: "none",
                     }}
                   >
-                    <ReviewBox
-                      itemIndex={index}
-                      disabled={rewardMsgShow}
-                      note={item as IAllNotes}
-                      markAsRevised={markAsRevised}
-                      skip={skip}
-                    />
+                    placeholder
                   </div>
-                ) : null;
-              })}
-            </div>
+                )
+              }
+            />
           ) : (
             <div
               style={{
@@ -198,12 +227,7 @@ export default function Home() {
           )}
 
           {rewardMsgShow && (
-            <Modal
-              text={currentRewardMsg.current}
-              noChat
-              center
-              color='#3178c6'
-            />
+            <Modal text={currentRewardMsg.current} center color='#3178c6' />
           )}
         </div>
       ) : (
@@ -267,7 +291,15 @@ const ReviewBox = (props: {
     })
   );
   return (
-    <>
+    <div
+      style={{
+        border: "2px solid #000",
+        padding: 10,
+        borderRadius: 10,
+        boxSizing: "border-box",
+        margin: 10,
+      }}
+    >
       <h2 style={{ fontSize: "30px", margin: 0 }}>{note.title}</h2>
       {differenceInDaysConst > 0 ? (
         <p
@@ -335,14 +367,14 @@ const ReviewBox = (props: {
           </button>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 
 const haveNotesToRevise = (allNotes: any) =>
   allNotes.find((v: any) => {
     return (
-      !v.delete &&
+      !v.deleted &&
       !isFuture(
         sub(new Date(v.revisions[v.revisionNumber + 1]), {
           days: date.days,

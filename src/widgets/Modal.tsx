@@ -3,13 +3,12 @@ import { AppContext } from "../AppContext/AppContext";
 
 export default function Modal(props: {
   text: string;
-  noChat?: boolean;
   center?: boolean;
   color?: string;
   chatObj?: any;
   scroll?: boolean;
 }) {
-  const { text, noChat, center, color, chatObj, scroll } = props;
+  const { text, center, color, chatObj, scroll } = props;
   const [chat, setChat] = useState<any>(chatObj);
 
   const chatModal = useRef<any>();
@@ -78,6 +77,7 @@ export default function Modal(props: {
       className='scroll'
       style={{
         position: "absolute",
+        zIndex: 1000,
         bottom: center ? "50%" : 0,
         left: center ? "50%" : 0,
         alignSelf: center ? "center" : "flex-start",
@@ -160,7 +160,7 @@ export default function Modal(props: {
         )}
       </div>
 
-      {!noChat &&
+      {chatObj &&
         chat.map((v: any, i1: number) => {
           const isReply = i1 % 2 === 0;
           return (
