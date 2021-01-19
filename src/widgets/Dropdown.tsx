@@ -4,7 +4,7 @@ import { v4 as uuidV4 } from "uuid";
 // import arrowDown from ".//arrow-down-sign-to-navigate.svg";
 import arrowDown from "../assets/icons/arrow-down-sign-to-navigate.svg";
 import deleteSimple from "../assets/icons/delete-simple.svg";
-import add from "../assets/icons/plus.svg";
+import add from "../assets/icons/plus-green.svg";
 
 export default function Dropdown(props: {
   title: string;
@@ -54,6 +54,7 @@ export default function Dropdown(props: {
           border: "2px solid #000",
           fontFamily: "'Roboto', Arial",
           cursor: "pointer",
+          minWidth: "92px",
         }}
         onMouseDown={() =>
           setDropdown((prev) => (prev === "Open" ? "Close" : "Open"))
@@ -76,7 +77,7 @@ export default function Dropdown(props: {
           zIndex: 30,
           backgroundColor: "#fff",
           width: 200,
-          overflow: "hidden",
+          overflow: "auto",
           borderRadius: 10,
           border: dropdown === "Open" ? "2px solid #000" : "0px solid #000",
         }}
@@ -115,6 +116,7 @@ export default function Dropdown(props: {
         )}
         {options.map((v: any, i: number) => (
           <div
+            className='scroll'
             key={v.id}
             style={{
               display: "flex",

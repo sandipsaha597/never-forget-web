@@ -44,6 +44,7 @@ export default function Home() {
   useEffect(() => {
     currentRewardMsg.current =
       rewardMsgs[Math.floor(Math.random() * rewardMsgs.length)];
+    document.title = "Home | Never Forget";
   }, []);
 
   useEffect(() => {
@@ -52,6 +53,7 @@ export default function Home() {
     allNotes.forEach((v: any, i: any) => {
       v.index = i;
       if (
+        v.revisions[v.revisionNumber + 1] &&
         !v.deleted &&
         !isFuture(
           sub(new Date(v.revisions[v.revisionNumber + 1]), {
@@ -66,10 +68,6 @@ export default function Home() {
 
     tempNotesToShow.push(...placeholderArray);
     setNotesToShow(tempNotesToShow);
-  }, [allNotes]);
-  console.log(notesToShow);
-
-  useEffect(() => {
     setNotesToRevise(!!haveNotesToRevise(allNotes));
   }, [allNotes]);
 
@@ -135,11 +133,7 @@ export default function Home() {
   return (
     <div style={{ position: "relative" }}>
       {isAnyNoteActive && allNotes.length !== 0 ? (
-        <div
-          style={{
-            margin: 10,
-          }}
-        >
+        <div className='home-wrapper'>
           {date.active && (
             <>
               <p>
@@ -164,19 +158,7 @@ export default function Home() {
               overscanBy={2}
               // This is the grid item component
               render={(props: any) =>
-                !props.data.placeholder &&
-                !props.data.deleted &&
-                !isFuture(
-                  sub(
-                    new Date(
-                      props.data.revisions[props.data.revisionNumber + 1]
-                    ),
-                    {
-                      days: date.days,
-                      hours: date.hours,
-                    }
-                  )
-                ) ? (
+                !props.data.placeholder ? (
                   <ReviewBox
                     itemIndex={props.data.index}
                     disabled={rewardMsgShow}
@@ -199,24 +181,22 @@ export default function Home() {
             />
           ) : (
             <div
+              className='revisions-complete'
               style={{
                 display: "flex",
                 flexDirection: "column",
                 backgroundColor: "#fff",
                 justifyContent: "center",
                 alignItems: "center",
-                height: "100%",
+                height:
+                  window.screen.width < 768
+                    ? "calc(100vh - 70px)"
+                    : "calc(100vh - 150px)",
               }}
             >
-              <img
-                style={{
-                  width: "20%",
-                }}
-                src={rewardIcon}
-              />
+              <img src={rewardIcon} />
               <p
                 style={{
-                  fontSize: 26,
                   textAlign: "center",
                   fontWeight: "bold",
                 }}
@@ -306,6 +286,7 @@ const ReviewBox = (props: {
           style={{
             marginBottom: 3,
             color: "#e74c3c",
+            wordBreak: "break-word",
           }}
         >
           {differenceInDaysConst} {differenceInDaysConst > 1 ? "days" : "day"}{" "}

@@ -1,6 +1,7 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import React, { useContext, useEffect, useState } from "react";
+import { Link, useLocation } from "react-router-dom";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
+
 import {
   AppProvider,
   AppContext,
@@ -13,12 +14,14 @@ import {
 } from "./screens/Questions/KnowSpacedRepetition";
 import Home from "./screens/Home";
 import AddNote from "./screens/AddNote";
+import AddNoteMobile from "./screens/AddNoteMobile";
 import AllNotes from "./screens/AllNotes";
 import Modal from "./widgets/Modal";
 import home from "./assets/icons/house.svg";
 import notes from "./assets/icons/notes.svg";
 import settings from "./assets/icons/settings.svg";
 import Settings, { PrivacyPolicy, Credits } from "./screens/Settings";
+import plus from "../src/assets/icons/plus.svg";
 
 // import Home from "./screens/Home";
 // import AllNotes from "./screens/AllNotes";
@@ -35,8 +38,9 @@ import Settings, { PrivacyPolicy, Credits } from "./screens/Settings";
 // import Modal from "./widgets/Modal";
 // import Settings from "./screens/Settings";
 import { add, differenceInSeconds, startOfDay } from "date-fns";
+import { logoInBase64 } from "./util/util";
+import NotFound from "./screens/NotFound";
 // import { AppProvider, AppContext, EnumSpacedRepetition } from "./AppContext/AppContext";
-
 export default function App() {
   // if (fontLoaded) {
   return (
@@ -76,34 +80,26 @@ export const rewardMsgs = [
 const Main = () => {
   const [rewardMsgShow, setRewardMsgShow] = useState(false);
   const [editNoteNumber, setEditNoteNumber] = useState(-1);
-  const isAddNoteOpen = useRef(false);
+  const [addNoteActive, setAddNoteActive] = useState<boolean>(false);
   const {
-    states: { knowSpacedRepetition, allNotes, isAnyNoteActive },
+    states: { knowSpacedRepetition, isAnyNoteActive },
     constants: { rewardMsgTimeoutTime },
   } = useContext<any>(AppContext);
-
-  //important
-  // useEffect(() => {
-  //   if (!isAnyNoteActive && isAnyNoteActive !== null) {
-  //     setTimeout(() => {
-  //       showAddNote(0);
-  //     }, 1000);
-  //   }
-  // }, [knowSpacedRepetition]);
-  useEffect(() => {
-    noNotesNotification(isAnyNoteActive);
-  }, [isAnyNoteActive]);
-
   const location = useLocation();
+
   return (
-    <div className='container'>
+    <>
       <Routes>
         <Route path='/what-is-spaced-repetition' element={<VideoScreen />} />
+        {/* <Route path='/*' element={<NotFound />} /> */}
       </Routes>
       {knowSpacedRepetition === EnumSpacedRepetition.No ? (
         <div>
           <Routes>
             <Route path='/' element={<KnowSpacedRepetition />} />
+            {location.pathname !== "/what-is-spaced-repetition" && (
+              <Route path='/*' element={<NotFound />} />
+            )}
           </Routes>
         </div>
       ) : (
@@ -119,7 +115,7 @@ const Main = () => {
         //     options={{ title: "" }}
         //   />
         // </Stack.Navigator>
-        <>
+        <div className='container'>
           {location.pathname !== "/what-is-spaced-repetition" && (
             <div
               style={{
@@ -127,92 +123,76 @@ const Main = () => {
                 width: "100%",
               }}
             >
-              <nav
-                className='nav'
-                style={{
-                  width: "20%",
-                  height: "100vh",
-                  background: "#e5e5e3",
-                  position: "sticky",
-                  top: 0,
-                  left: 0,
-                }}
-              >
-                <Link
-                  className='nav-link'
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    width: "100%",
-                    boxSizing: "border-box",
-                    textDecoration: "none",
-                    color: location.pathname === "/" ? "blue" : "#000",
-                    padding: "10px 20px",
-                  }}
-                  to='/'
-                >
-                  <img
-                    style={{ width: "21px", marginRight: "10px" }}
-                    src={home}
-                    alt=''
-                  />{" "}
-                  <span>Home</span>
-                </Link>
-                <Link
-                  className='nav-link'
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    width: "100%",
-                    boxSizing: "border-box",
-                    textDecoration: "none",
-                    color: location.pathname === "/all-notes" ? "blue" : "#000",
-                    padding: "10px 20px",
-                  }}
-                  to='/all-notes'
-                >
-                  <img
-                    style={{ width: "21px", marginRight: "10px" }}
-                    src={notes}
-                    alt=''
-                  />
-                  <span>All Notes</span>
-                </Link>
-                <Link
-                  className='nav-link'
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    width: "100%",
-                    boxSizing: "border-box",
-                    textDecoration: "none",
-                    color: location.pathname === "/settings" ? "blue" : "#000",
-                    padding: "10px 20px",
-                  }}
-                  to='/settings'
-                >
-                  <img
-                    style={{ width: "21px", marginRight: "10px" }}
-                    src={settings}
-                    alt=''
-                  />
-                  <span>Settings</span>
-                </Link>
-              </nav>
-              <div style={{ width: "80%" }}>
-                {(location.pathname === "/" ||
-                  location.pathname === "/all-notes") && (
-                  <AddNote
-                    editNoteNumber={editNoteNumber}
-                    setEditNoteNumber={() => false}
-                    noteAdded={() => {
-                      setRewardMsgShow(true);
-                      setTimeout(() => {
-                        setRewardMsgShow(false);
-                      }, rewardMsgTimeoutTime + 500);
+              <nav className='nav'>
+                <div className='menu'>
+                  <Link
+                    className='nav-link'
+                    style={{
+                      color: location.pathname === "/" ? "blue" : "#000",
+                      backgroundColor:
+                        location.pathname === "/"
+                          ? window.screen.width < 768
+                            ? "#e6e6e6"
+                            : "#d8d8d8"
+                          : "transparent",
                     }}
-                  />
-                )}
+                    to='/'
+                  >
+                    <img style={{ width: "21px" }} src={home} alt='' />
+                    <span>Home</span>
+                  </Link>
+                  <Link
+                    className='nav-link'
+                    style={{
+                      color:
+                        location.pathname === "/all-notes" ? "blue" : "#000",
+                      backgroundColor:
+                        location.pathname === "/all-notes"
+                          ? window.screen.width < 768
+                            ? "#e6e6e6"
+                            : "#d8d8d8"
+                          : "transparent",
+                    }}
+                    to='/all-notes'
+                  >
+                    <img style={{ width: "21px" }} src={notes} alt='' />
+                    <span>All Notes</span>
+                  </Link>
+                  <Link
+                    className='nav-link'
+                    style={{
+                      color:
+                        location.pathname === "/settings" ? "blue" : "#000",
+                      backgroundColor:
+                        location.pathname === "/settings"
+                          ? window.screen.width < 768
+                            ? "#e6e6e6"
+                            : "#d8d8d8"
+                          : "transparent",
+                    }}
+                    to='/settings'
+                  >
+                    <img style={{ width: "21px" }} src={settings} alt='' />
+                    <span>Settings</span>
+                  </Link>
+                </div>
+                {window.screen.width >= 768 && <LogoAndVersion />}
+              </nav>
+              <main>
+                {window.screen.width >= 768 &&
+                  (location.pathname === "/" ||
+                    location.pathname === "/all-notes") && (
+                    <AddNote
+                      editNoteNumber={editNoteNumber}
+                      setEditNoteNumber={setEditNoteNumber}
+                      noteAdded={() => {
+                        setRewardMsgShow(true);
+                        setTimeout(() => {
+                          setRewardMsgShow(false);
+                        }, rewardMsgTimeoutTime + 500);
+                      }}
+                    />
+                  )}
                 <Routes>
                   <Route path='/' element={<Home />} />
                   <Route
@@ -226,8 +206,34 @@ const Main = () => {
                   />
                   <Route path='/privacy-policy' element={<PrivacyPolicy />} />
                   <Route path='/credits' element={<Credits />} />
+                  <Route path='/*' element={<NotFound />} />
                 </Routes>
-              </div>
+              </main>
+              {window.screen.width < 768 && (
+                <>
+                  <AddNoteMobile
+                    editNoteNumber={editNoteNumber}
+                    setEditNoteNumber={setEditNoteNumber}
+                    noteAdded={() => {
+                      setRewardMsgShow(true);
+                      setTimeout(() => {
+                        setRewardMsgShow(false);
+                      }, rewardMsgTimeoutTime + 500);
+                    }}
+                    addNoteActive={addNoteActive}
+                    setAddNoteActive={setAddNoteActive}
+                  />
+                  {(location.pathname === "/" ||
+                    location.pathname === "/all-notes") && (
+                    <button
+                      onMouseDown={() => setAddNoteActive(true)}
+                      style={{ position: "fixed", bottom: 50, right: 5 }}
+                    >
+                      <img style={{ width: "60px" }} src={plus} alt='add' />
+                    </button>
+                  )}
+                </>
+              )}
             </div>
           )}
           {rewardMsgShow && (
@@ -237,8 +243,38 @@ const Main = () => {
               color='#3178c6'
             />
           )}
-        </>
+        </div>
       )}
+    </>
+  );
+};
+
+export const LogoAndVersion = () => {
+  return (
+    <div
+      style={{ textAlign: "center", paddingTop: "15px" }}
+      className='logo-and-version'
+    >
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <img src={logoInBase64} alt='Never Forget Logo' />
+        <span
+          style={{
+            fontFamily: "Staatliches, Arial",
+            lineHeight: 1,
+            marginLeft: "7px",
+            marginTop: "9px",
+          }}
+        >
+          Never Forget
+        </span>
+      </div>
+      <div style={{ letterSpacing: "1px", margin: "5px 0 16px 0" }}>v1.0.0</div>
     </div>
   );
 };
@@ -271,7 +307,7 @@ const noNotesNotification = async (isAnyNoteActive: boolean) => {
             body: "Add notes so you Never Forget what's important to you!", // content of the push notification
             // @ts-ignore
             // showTrigger: new TimestampTrigger(new Date().getTime() + trigger), // set the time for the push notification
-            showTrigger: new TimestampTrigger(new Date().getTime() + 10), // set the time for the push notification
+            showTrigger: new TimestampTrigger(new Date().getTime() + trigger), // set the time for the push notification
             data: {
               url: window.location.href, // pass the current url to the notification
             },

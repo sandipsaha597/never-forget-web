@@ -1,9 +1,10 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { AppContext, EnumSpacedRepetition } from "../AppContext/AppContext";
 import AllNotes from "./AllNotes";
 import { add, differenceInSeconds, format } from "date-fns";
 import Dropdown from "../widgets/Dropdown";
 import { Route, Routes, useNavigate } from "react-router";
+import { LogoAndVersion } from "../App";
 
 export default function Settings() {
   const [page, setPage] = useState<string>("none");
@@ -19,8 +20,12 @@ export default function Settings() {
 
   const navigate = useNavigate();
 
+  useEffect(() => {
+    document.title = "Settings | Never Forget";
+  }, []);
+
   return (
-    <div>
+    <div className='settings'>
       {/* <Box
         heading='Reschedule Notifications'
         desc='Click here if your phone/tab was rebooted/restarted so you can get notifications to review your notes correctly.'
@@ -90,6 +95,11 @@ export default function Settings() {
           navigate("/credits");
         }}
       />
+      {window.screen.width < 768 && (
+        <div style={{ width: "100vw" }}>
+          <LogoAndVersion />
+        </div>
+      )}
     </div>
   );
 }
@@ -108,9 +118,9 @@ const Box = (props: iBox) => {
   return (
     <div
       style={{
+        padding: "0 8px",
         marginBottom: 10,
         backgroundColor: highlight ? "green" : "transparent",
-        width: "50%",
         textAlign: "left",
       }}
     >
@@ -120,8 +130,9 @@ const Box = (props: iBox) => {
           heading !== "Turn On/Off Animations" && onMouseDown(heading)
         }
         style={{
+          width: "100%",
           opacity: comingSoon ? 0.5 : 1,
-          padding: "10px 20px",
+          padding: "10px 0",
           cursor: comingSoon ? "no-drop" : "pointer",
         }}
       >
@@ -201,11 +212,14 @@ const Box = (props: iBox) => {
 };
 
 export const PrivacyPolicy = () => {
+  useEffect(() => {
+    document.title = "Privacy Policy | Never Forget";
+  }, []);
   return (
-    <div style={{ padding: "10px 20px" }}>
-      <p style={{ fontSize: 20, fontWeight: "bold", marginTop: 15 }}>
+    <div className='info-page'>
+      <h1 style={{ fontSize: 20, fontWeight: "bold", marginTop: 15 }}>
         Privacy Policy
-      </p>
+      </h1>
       <p>
         Sandip built the Never Forget app as an Ad Supported app. This SERVICE
         is provided by Sandip at no cost and is intended for use as is. This
@@ -325,21 +339,26 @@ export const PrivacyPolicy = () => {
   );
 };
 
-export const Credits = () => (
-  <div style={{ padding: "10px 20px" }}>
-    <h2 style={{ fontSize: 20, fontWeight: "bold", marginTop: 15 }}>
-      Developer
-    </h2>
-    <p>Sandip Saha</p>
-    <h2 style={{ fontSize: 20, fontWeight: "bold", marginTop: 15 }}>Icons</h2>
-    <p>Icon made by Vectors Market from www.flaticon.com</p>
-    <p>Icon made by Freepik from www.flaticon.com</p>
-    <p>Icon made by ultimatearm from www.flaticon.com</p>
-    <p>Icon made by Pixelmeetup from www.flaticon.com</p>
-    <p>Icon made by Smashicons from www.flaticon.com</p>
-    <p>Icon made by Eucalyp from www.flaticon.com</p>
-  </div>
-);
+export const Credits = () => {
+  useEffect(() => {
+    document.title = "Settings | Never Forget";
+  }, []);
+  return (
+    <div className='info-page'>
+      <h2 style={{ fontSize: 20, fontWeight: "bold", marginTop: 15 }}>
+        Developer
+      </h2>
+      <p>Sandip Saha</p>
+      <h2 style={{ fontSize: 20, fontWeight: "bold", marginTop: 15 }}>Icons</h2>
+      <p>Icon made by Vectors Market from www.flaticon.com</p>
+      <p>Icon made by Freepik from www.flaticon.com</p>
+      <p>Icon made by ultimatearm from www.flaticon.com</p>
+      <p>Icon made by Pixelmeetup from www.flaticon.com</p>
+      <p>Icon made by Smashicons from www.flaticon.com</p>
+      <p>Icon made by Eucalyp from www.flaticon.com</p>
+    </div>
+  );
+};
 
 // const rescheduleNotifications = (setRescheduleNotificationsProgress: any) => {
 //   Notifications.getAllScheduledNotificationsAsync().then((allNotifications) => {

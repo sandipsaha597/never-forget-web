@@ -3,9 +3,12 @@ import { AppContext } from "../AppContext/AppContext";
 import { format } from "date-fns";
 import { Masonry } from "masonic";
 
-import { isAnyNoteActiveFunc, isRecycleBinEmptyFunc } from "../util/util";
+import {
+  isAnyNoteActiveFunc,
+  isRecycleBinEmptyFunc,
+  schedulePushNotification,
+} from "../util/util";
 import Dropdown from "../widgets/Dropdown";
-import { schedulePushNotification } from "./AddNote";
 
 import box from "../assets/icons/box.svg";
 import calender from "../assets/icons/calendar.svg";
@@ -17,8 +20,8 @@ import search from "../assets/icons/magnifiying-glass.svg";
 import leftArrow from "../assets/icons/left-arrow.svg";
 import restore from "../assets/icons/restore.svg";
 import recycleBinIcon from "../assets/icons/recycle-bin.svg";
-import logo from "../assets/NFicon2.png";
-export const placeholderArray = [
+import { useLocation } from "react-router";
+export let placeholderArray = [
   { placeholder: true },
   { placeholder: true },
   { placeholder: true },
@@ -70,6 +73,13 @@ export const placeholderArray = [
   { placeholder: true },
   { placeholder: true },
 ];
+
+const screenWidth = window.screen.width;
+
+if (window.screen.width < 768) {
+  placeholderArray = placeholderArray.slice(0, 15);
+}
+console.log(placeholderArray);
 export default function AllNotes(props: {
   recycleBin?: boolean;
   setEditNoteNumber?: (index: number) => void;
@@ -82,6 +92,7 @@ export default function AllNotes(props: {
     states: { allNotes, subs, isAnyNoteActive, isRecycleBinEmpty },
     actions: { setAllNotes, setIsAnyNoteActive, setIsRecycleBinEmpty },
   } = useContext<any>(AppContext);
+  const searchInputRef = useRef<any>();
   const subjectFilterOptions = [
     {
       id: "32324923",
@@ -89,6 +100,11 @@ export default function AllNotes(props: {
     },
     ...subs,
   ];
+  useEffect(() => {
+    document.title = recycleBin
+      ? "Recycle Bin | Never Forget"
+      : "All Notes | Never Forget";
+  }, []);
   useEffect(() => {
     const tempNotesToShow: any = [];
 
@@ -172,6 +188,14 @@ export default function AllNotes(props: {
   };
 
   useEffect(() => {
+    if (searchText === "" || searchText) {
+      searchInputRef?.current?.focus();
+    } else {
+      searchInputRef?.current?.blur();
+    }
+  }, [searchText]);
+
+  useEffect(() => {
     // if (Notification.permission === "granted") {
     //   // alert("we have permission");
     //   const notification = new Notification("permission granted", {
@@ -200,17 +224,22 @@ export default function AllNotes(props: {
           <NoNotes source={recycleBinIcon} text='Recycle bin is empty' />
         ) : (
           <div
+            className='all-notes-wrapper'
             style={{
               backgroundColor: "#fff",
-              position: "relative",
-              margin: "0 10px 10px 10px",
+              // position: "relative",
             }}
           >
             <div
               style={{
+                position: "sticky",
+                // position: "-webkit-sticky",
+                top: recycleBin || window.screen.width < 768 ? 0 : "100px",
+                background: "#fff",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "space-between",
+                zIndex: 2,
               }}
             >
               <div style={{ display: "flex", alignItems: "center" }}>
@@ -243,28 +272,94 @@ export default function AllNotes(props: {
                   </div>
                 )}
               </div>
-              <input
-                placeholder='Search...'
-                value={searchText ? searchText : ""}
-                onChange={(e) =>
-                  filter({
-                    subject: subjectFilterSelected,
-                    searchText: e.target.value,
-                  })
-                }
-                className='addnote-input search'
-                style={{
-                  background: "transparent",
-                  outline: "none",
-                  border: "none",
-                  borderBottom: "2px solid #000",
-                  fontSize: "17px",
-                  margin: " 0 10px",
-                  padding: "4px",
-                  width: "40%",
-                  transition: ".4s ease-in-out",
-                }}
-              />
+
+              {screenWidth > 768 ? (
+                <input
+                  placeholder='Search...'
+                  value={searchText ? searchText : ""}
+                  onChange={(e) =>
+                    filter({
+                      subject: subjectFilterSelected,
+                      searchText: e.target.value,
+                    })
+                  }
+                  className='addnote-input search'
+                  style={{
+                    background: "transparent",
+                    outline: "none",
+                    border: "none",
+                    borderBottom: "2px solid #000",
+                    fontSize: "17px",
+                    margin: " 0 10px",
+                    padding: "4px",
+                    width: "40%",
+                    transition: ".4s ease-in-out",
+                  }}
+                />
+              ) : (
+                <>
+                  <div
+                    style={{
+                      boxSizing: "border-box",
+                      position: "fixed",
+                      top: searchText || searchText === "" ? 0 : -54,
+                      backgroundColor: "#3178c6",
+                      width: "100%",
+                      padding: "13px 7px",
+                      display: "flex",
+                      alignItems: "center",
+                      zIndex: 2,
+                      transition: ".3s ease-in-out",
+                    }}
+                  >
+                    <button
+                      onClick={() => {
+                        // searchInputRef?.current?.blur();
+
+                        filter({
+                          subject: subjectFilterSelected,
+                          searchText: false,
+                        });
+                        // searchFilter(false);
+                      }}
+                    >
+                      <img
+                        style={{ width: "20px" }}
+                        src={leftArrow}
+                        alt='back'
+                      />
+
+                      {/* <AntDesign name='arrowleft' size={24} color='black' /> */}
+                    </button>
+                    <input
+                      ref={searchInputRef}
+                      placeholder='Search...'
+                      value={searchText ? searchText : ""}
+                      onChange={(e) =>
+                        filter({
+                          subject: subjectFilterSelected,
+                          searchText: e.target.value,
+                        })
+                      }
+                      className='addnote-mobile-input search'
+                      style={{
+                        width: "80%",
+                        background: "transparent",
+                        outline: "none",
+                        border: "none",
+                        padding: "4px",
+                        paddingBottom: "5px",
+                      }}
+                    />
+                  </div>
+                  <button
+                    onMouseDown={() => setSearchText("")}
+                    style={{ marginRight: 10 }}
+                  >
+                    <img style={{ width: "20px" }} src={search} alt='search' />
+                  </button>
+                </>
+              )}
             </div>
             {
               !recycleBin ? (
@@ -278,8 +373,6 @@ export default function AllNotes(props: {
                   overscanBy={2}
                   // This is the grid item component
                   render={(props: any) =>
-                    !props.data.deleted &&
-                    props.data.show &&
                     !props.data.placeholder ? (
                       <NoteBox
                         itemIndex={props.data.index}
@@ -312,8 +405,6 @@ export default function AllNotes(props: {
                   overscanBy={2}
                   // This is the grid item component
                   render={(props: any) =>
-                    props.data.deleted &&
-                    props.data.show &&
                     !props.data.placeholder ? (
                       <NoteBox
                         recycleBin
@@ -363,38 +454,26 @@ export default function AllNotes(props: {
       ) : (
         <NoNotes />
       )}
-      <div
-        style={{
-          borderRadius: 50,
-          position: "absolute",
-          bottom: 0,
-          right: 10,
-          // transform: [{ translateX: -28 }],
-        }}
-      ></div>
     </>
   );
 }
 
 export const NoNotes = (props: { source?: any; text?: string }) => {
   const { source, text } = props;
+  const location = useLocation();
   return (
     <div
+      className='no-notes'
       style={{
-        display: "flex",
-        flexDirection: "column",
-        backgroundColor: "#fff",
-        justifyContent: "center",
-        alignItems: "center",
-        height: "calc(100vh - 150px)",
+        height:
+          window.screen.width < 768
+            ? "calc(100vh - 33px)"
+            : `calc(100vh - ${
+                location.pathname === "/recycle-bin" ? "0px" : "150px"
+              })`,
       }}
     >
-      <img
-        style={{
-          width: "20%",
-        }}
-        src={source ? source : box}
-      />
+      <img src={source ? source : box} />
       <p>{text ? text : "No Notes yet"}</p>
     </div>
   );
@@ -472,6 +551,7 @@ const NoteBox = (props: {
           style={{
             fontSize: 20,
             marginBottom: 10,
+            wordBreak: "break-word",
           }}
         >
           {note.desc}
@@ -506,26 +586,22 @@ const NoteBox = (props: {
             <img style={{ height: 32, width: 32 }} src={restore} />
           </button>
         )}
-        {!recycleBin && note.deleted ? (
-          <p>Note deleted</p>
-        ) : (
-          <button
-            style={{ alignSelf: "flex-end", marginLeft: 10 }}
-            onMouseDown={() => {
-              if (recycleBin) {
-                deleteNote(itemIndex, note.id, note, "permanentDelete");
-              } else {
-                deleteNote(itemIndex, note.id, note);
-              }
-            }}
-          >
-            {recycleBin ? (
-              <img style={{ width: "30px" }} src={deleteIcon} />
-            ) : (
-              <img style={{ width: "30px" }} src={softDeleteIcon} />
-            )}
-          </button>
-        )}
+        <button
+          style={{ alignSelf: "flex-end", marginLeft: 10 }}
+          onMouseDown={() => {
+            if (recycleBin) {
+              deleteNote(itemIndex, note.id, note, "permanentDelete");
+            } else {
+              deleteNote(itemIndex, note.id, note);
+            }
+          }}
+        >
+          {recycleBin ? (
+            <img style={{ width: "30px" }} src={deleteIcon} />
+          ) : (
+            <img style={{ width: "30px" }} src={softDeleteIcon} />
+          )}
+        </button>
       </div>
     </div>
   );

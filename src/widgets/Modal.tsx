@@ -12,7 +12,6 @@ export default function Modal(props: {
   const [chat, setChat] = useState<any>(chatObj);
 
   const chatModal = useRef<any>();
-
   useEffect(() => {
     setChat(chatObj);
   }, [text]);
@@ -76,21 +75,27 @@ export default function Modal(props: {
     <div
       className='scroll'
       style={{
-        position: "absolute",
-        zIndex: 1000,
+        position: center ? "fixed" : "absolute",
         bottom: center ? "50%" : 0,
         left: center ? "50%" : 0,
+        transform: center ? "translate(-50%, 0%)" : "translate(0, 0)",
         alignSelf: center ? "center" : "flex-start",
+        textAlign: center ? "center" : "left",
         borderRadius: center ? 4 : 0,
         opacity: 1,
         // margin: 10,
         width: center ? "auto" : "100%",
         overflowY: "scroll",
-        height: scroll ? "80vh" : "auto",
+        height: scroll
+          ? window.screen.width < 768
+            ? "calc(100% - 80px)"
+            : "80vh"
+          : "auto",
         // flex: 1,
         justifyContent: "flex-end",
         backgroundColor: center ? "transparent" : "#e0e0e0",
         padding: 10,
+        boxSizing: "border-box",
       }}
     >
       <div
@@ -111,12 +116,12 @@ export default function Modal(props: {
                   "https://www.youtube.com/channel/UCBX_-ls-dXuhFNSWSXcHrTA"
                 }
               >
-                <p style={{ color: "#fff" }}>Matt &amp; Matty</p>
+                <p style={{ color: "#fff", marginTop: 0 }}>Matt &amp; Matty</p>
               </a>
               {"\n \n"}
               The YouTube video link: {"\n"}
               <a href={"https://www.youtube.com/watch?v=VkPlQ4gjk8M"}>
-                <p style={{ color: "#fff" }}>
+                <p style={{ color: "#fff", marginTop: 0 }}>
                   https://www.youtube.com/watch?v={"\n"}VkPlQ4gjk8M
                 </p>
               </a>
@@ -133,12 +138,14 @@ export default function Modal(props: {
                   "https://www.youtube.com/channel/UCClj0UjhdYaR-WR-RHBVOww"
                 }
               >
-                <p style={{ color: "#fff" }}>AMIT KAKKAR SPEAKS</p>
+                <p style={{ color: "#fff", marginTop: 0 }}>
+                  AMIT KAKKAR SPEAKS
+                </p>
               </a>
               {"\n \n"}
               The YouTube video link: {"\n"}
               <a href={"https://www.youtube.com/watch?v=OccJMq7AtSE"}>
-                <p style={{ color: "#fff" }}>
+                <p style={{ color: "#fff", marginTop: 0 }}>
                   https://www.youtube.com/watch?v={"\n"}OccJMq7AtSE
                 </p>
               </a>

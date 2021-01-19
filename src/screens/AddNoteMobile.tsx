@@ -3,22 +3,29 @@ import { AppContext } from "../AppContext/AppContext";
 import Dropdown from "../widgets/Dropdown";
 import { add, differenceInSeconds, format, startOfDay } from "date-fns/esm";
 import { v4 as uuidv4 } from "uuid";
-import Modal from "../widgets/Modal";
 import done from "../assets/icons/done.svg";
 import leftArrow from "../assets/icons/left-arrow-white.svg";
-import { logoInBase64, schedulePushNotification } from "../util/util";
+import { schedulePushNotification } from "../util/util";
+import Modal from "../widgets/Modal";
 
-export default function AddNote(props: {
+export default function AddNoteMobile(props: {
   editNoteNumber: number;
   setEditNoteNumber: (index: number) => void;
   noteAdded: () => void;
+  addNoteActive: boolean;
+  setAddNoteActive: any;
 }) {
-  const [addNoteActive, setAddNoteActive] = useState<boolean>(false);
-  const { editNoteNumber, setEditNoteNumber, noteAdded } = props;
+  const {
+    editNoteNumber,
+    setEditNoteNumber,
+    noteAdded,
+    addNoteActive,
+    setAddNoteActive,
+  } = props;
   const [title, setTitle] = useState("");
   const [desc, setDesc] = useState("");
-  const [firstNote, setFirstNote] = useState(true);
   const pattern = useRef<number[]>([1, 7, 30, 90, 365]).current;
+  const [firstNote, setFirstNote] = useState(true);
 
   const {
     states: { subs, allNotes, isAnyNoteActive },
@@ -27,8 +34,6 @@ export default function AddNote(props: {
   } = useContext<any>(AppContext);
   const [selected, setSelected] = useState(subs[0].title);
   const titleInputRef = useRef<any>();
-  const addBtnRef = useRef<any>();
-  const backBtnRef = useRef<any>();
 
   const chatObj = [
     [
@@ -63,11 +68,6 @@ export default function AddNote(props: {
         setAddNoteActive(true);
       }, 1000);
     }
-    window.addEventListener("keydown", (e) => {
-      if (e.ctrlKey && e.key === "i") {
-        setAddNoteActive(true);
-      }
-    });
   }, []);
 
   useEffect(() => {
@@ -82,7 +82,6 @@ export default function AddNote(props: {
       setAddNoteActive(true);
     }
   }, [editNoteNumber]);
-
   useEffect(() => {
     if (addNoteActive) {
       titleInputRef?.current.focus();
@@ -106,22 +105,6 @@ export default function AddNote(props: {
     //   }
     // });
   }, [editNoteNumber]);
-  useEffect(() => {
-    // window.removeEventListener("keydown", keyDownFunc);
-    window.addEventListener("keydown", keyDownFunc);
-  }, [addNoteActive]);
-
-  const keyDownFunc = (e: any) => {
-    // console.log("run", addNoteActive, e.key === "Escape");
-    if (addNoteActive) {
-      if (e.ctrlKey && e.key === "Enter") {
-        addBtnRef?.current?.click();
-      }
-      if (e.key === "Escape") {
-        backBtnRef?.current?.click();
-      }
-    }
-  };
 
   const addNote = () => {
     let allRevisions = [startOfDay(new Date())];
@@ -191,33 +174,35 @@ export default function AddNote(props: {
     <div
       style={{
         backgroundColor: mainColor,
-        height: addNoteActive ? "100vh" : "100px",
-        width: "100%",
         boxSizing: "border-box",
         padding: "10px",
-        transition: ".4s ease-in-out",
-        overflow: "hidden",
-        position: "sticky",
-        top: 0,
+        transition: ".3s ease-in-out",
+        overflow: "auto",
+        position: "fixed",
+        left: addNoteActive ? "0" : "-100%",
+        // display: addNoteActive ? "block" : "none",
+        height: "100vh",
+        width: "100%",
         zIndex: 100,
       }}
     >
       <div
         style={{
+          // backgroundColor: "#3178c6",
+          boxSizing: "border-box",
           display: "flex",
           justifyContent: "space-between",
-          width: addNoteActive ? "92%" : "100%",
-          backgroundColor: "#3178c6",
-          height: addNoteActive ? "100px" : "0",
-          overflow: "hidden",
+          padding: "10px",
+          // position: "relative",
+          // top: 0,
           transition: ".4s ease-in-out",
-          margin: "auto",
+          width: "100%",
+          zIndex: 100,
         }}
       >
         <button
-          title='Esc'
           style={{ padding: 10 }}
-          onClick={() => {
+          onMouseDown={() => {
             setAddNoteActive(false);
             if (editNoteNumber >= 0) {
               setTimeout(() => {
@@ -227,15 +212,12 @@ export default function AddNote(props: {
               }, 500);
             }
           }}
-          ref={backBtnRef}
         >
           <img style={{ width: "30px" }} src={leftArrow} alt='close' />
         </button>
         <button
-          title='ctrl + Enter'
-          ref={addBtnRef}
           disabled={title.trim() === "" ? true : false || !addNoteActive}
-          onClick={() => {
+          onMouseDown={() => {
             setAddNoteActive(false);
             if (editNoteNumber >= 0) {
               editNote();
@@ -247,23 +229,26 @@ export default function AddNote(props: {
           <img style={{ width: "30px" }} src={done} alt='save note' />
         </button>
       </div>
-      <div className='addnote-wrapper'>
+      <div
+        style={
+          {
+            // padding: "0 100px",
+          }
+        }
+      >
         <h1
           style={{
             color: "white",
             marginTop: 0,
             textAlign: "center",
-            fontSize: addNoteActive ? "54px" : "29px",
+            fontSize: "35px",
             transition: ".4s ease-in-out",
           }}
         >
           {editNoteNumber !== -1 ? "Edit Note" : "What you learned today?"}
         </h1>
         <input
-          title='ctrl + i'
-          tabIndex={1}
           onMouseDown={() => setAddNoteActive(true)}
-          onFocus={() => setAddNoteActive(true)}
           className='addnote-input'
           style={{
             width: "100%",
@@ -302,7 +287,6 @@ export default function AddNote(props: {
           </div>
         </div>
         <textarea
-          tabIndex={2}
           style={{
             width: "100%",
             background: "transparent",
@@ -320,9 +304,9 @@ export default function AddNote(props: {
         />
         <p
           style={{
-            margin: 0,
             textAlign: "right",
             color: desc.length < 400 ? "#000" : "#27ae60",
+            margin: 0,
           }}
         >
           {desc.length}/400

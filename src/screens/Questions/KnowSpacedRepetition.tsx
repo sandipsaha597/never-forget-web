@@ -1,10 +1,9 @@
 import { add, format } from "date-fns";
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { AppContext, EnumSpacedRepetition } from "../../AppContext/AppContext";
 import Dropdown from "../../widgets/Dropdown";
 import Modal from "../../widgets/Modal";
-// import Modal from "../../widgets/Modal";
 
 export function KnowSpacedRepetition() {
   const {
@@ -13,6 +12,9 @@ export function KnowSpacedRepetition() {
   } = useContext<any>(AppContext);
   const navigate = useNavigate();
 
+  useEffect(() => {
+    document.title = "Never Forget";
+  }, []);
   return (
     <div
       style={{
@@ -23,9 +25,7 @@ export function KnowSpacedRepetition() {
         textAlign: "center",
       }}
     >
-      <h1 style={{ margin: 0, fontSize: "45px" }}>
-        Do you know what is spaced repetition?
-      </h1>
+      <h1 className='ques-h1'>Do you know what is spaced repetition?</h1>
       <div>
         <button
           className='app-btn'
@@ -67,7 +67,9 @@ export function KnowSpacedRepetition() {
 export const VideoScreen = () => {
   const [selected, setSelected] = useState("English");
   const [text, setText] = useState("custom===the guy above===");
-
+  useEffect(() => {
+    document.title = "What is Spaced Repetition | Never Forget";
+  }, []);
   const {
     actions: { setKnowSpacedRepetition },
   } = useContext<any>(AppContext);
@@ -172,15 +174,16 @@ So did you understand what spaced repetition is? It's crucial to use this app co
     ],
   ];
   return (
-    <div style={{ display: "flex", height: "96vh" }}>
-      <div style={{ width: "70%" }}>
-        {selected === "English" ? (
-          <Video url='https://www.youtube-nocookie.com/embed/VkPlQ4gjk8M?start=30&end=152' />
-        ) : (
-          <Video url='https://www.youtube-nocookie.com/embed/OccJMq7AtSE?start=655&end=920' />
-        )}
-      </div>
-      <div style={{ marginLeft: 10, width: "30%", position: "relative" }}>
+    <div
+      className='container video-screen'
+      style={{ display: "flex", height: "96vh" }}
+    >
+      {selected === "English" ? (
+        <Video url='https://www.youtube-nocookie.com/embed/VkPlQ4gjk8M?start=30&end=152' />
+      ) : (
+        <Video url='https://www.youtube-nocookie.com/embed/OccJMq7AtSE?start=655&end=920' />
+      )}
+      <div className='dropdown-and-modal'>
         <Dropdown
           title='Switch video language'
           selected={selected}
@@ -192,23 +195,15 @@ So did you understand what spaced repetition is? It's crucial to use this app co
             { id: "3489124389", title: "Hindi" },
           ]}
         />
-        <div
-          style={
-            {
-              // overflow: "hidden",
-            }
-          }
-        >
-          {selected === "English" ? (
-            <Modal text='custom===the guy above===' chatObj={chatObj} scroll />
-          ) : (
-            <Modal
-              text='custom===the guy above hindi==='
-              chatObj={chatObj}
-              scroll
-            />
-          )}
-        </div>
+        {selected === "English" ? (
+          <Modal text='custom===the guy above===' chatObj={chatObj} scroll />
+        ) : (
+          <Modal
+            text='custom===the guy above hindi==='
+            chatObj={chatObj}
+            scroll
+          />
+        )}
       </div>
     </div>
   );
@@ -219,10 +214,10 @@ const Video = (props: { url: string }) => {
   return (
     <iframe
       style={{
-        width: "100%",
-        height: "32vw",
         border: "none",
       }}
+      className='video'
+      title='what is spaced repetition - video'
       src={url}
       allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen'
     ></iframe>
