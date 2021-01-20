@@ -1,10 +1,18 @@
 import React, { useContext, useEffect, useState } from "react";
-import { AppContext, EnumSpacedRepetition } from "../AppContext/AppContext";
+import {
+  AppContext,
+  EnumSpacedRepetition,
+  closeAllNotifications,
+  scheduleAllNotifications,
+  saveAndUpdate,
+  setItem,
+} from "../AppContext/AppContext";
 import AllNotes from "./AllNotes";
 import { add, differenceInSeconds, format } from "date-fns";
 import Dropdown from "../widgets/Dropdown";
 import { Route, Routes, useNavigate } from "react-router";
 import { LogoAndVersion } from "../App";
+import { logoInBase64, schedulePushNotification } from "../util/util";
 
 export default function Settings() {
   const [page, setPage] = useState<string>("none");
@@ -13,15 +21,21 @@ export default function Settings() {
     rescheduleNotificationsProgress,
     setRescheduleNotificationsProgress,
   ] = useState<any>(false);
+  const [notifications, setNotifications] = useState<"On" | "Off">("Off");
+  const [alertMsg, setAlertMsg] = useState("");
   const {
-    states: { animations },
-    actions: { setKnowSpacedRepetition, setAnimations },
+    actions: { setKnowSpacedRepetition },
   } = useContext<any>(AppContext);
 
   const navigate = useNavigate();
-
   useEffect(() => {
     document.title = "Settings | Never Forget";
+
+    if (Notification.permission === "granted") {
+      setItem(setNotifications, "notifications");
+    } else {
+      setNotifications("Off");
+    }
   }, []);
 
   return (
@@ -35,12 +49,40 @@ export default function Settings() {
           setPage(val);
         }}
       /> */}
-      {/* <Box
-        heading='Turn On/Off Animations'
-        desc="Animations might cause some UI(User Interface: the thing you are looking at) issues in some devices. Turning it off will resolve those issues. It won't disable all the animations."
-        onMouseDown={setAnimations}
-        boxInfo={{ animations: animations }}
-      /> */}
+      <Box
+        heading='Turn On/Off Notifications'
+        desc="This feature is experimental. It may not work as expected in your device. Usually it works fine with Chrome. And we don't spam."
+        onMouseDown={(val: string) => {
+          if (val === "On" && notifications !== "On") {
+            Notification.requestPermission().then((permission) => {
+              if (permission === "granted") {
+                const greeting = new Notification("Notifications are on 👍", {
+                  body:
+                    "If you have revision(s), You'll receive a notification of your revision(s) at 6:00am",
+                  icon: logoInBase64,
+                });
+                setAlertMsg("Scheduling notifications. Please wait...");
+                scheduleAllNotifications(setAlertMsg);
+                saveAndUpdate("notifications", setNotifications, "On");
+              } else if (permission === "denied") {
+                setAlertMsg("You have blocked notification permission");
+                saveAndUpdate("notifications", setNotifications, "Off");
+              } else if (permission === "default") {
+                setAlertMsg(
+                  "Please allow notification permission to receive notifications"
+                );
+                saveAndUpdate("notifications", setNotifications, "Off");
+              }
+            });
+          } else if (val === "Off") {
+            closeAllNotifications();
+            saveAndUpdate("notifications", setNotifications, "Off");
+          }
+        }}
+        boxInfo={{ notifications: notifications, alertMsg: alertMsg }}
+        highlight
+      />
+
       <Box
         heading='Backup'
         desc='Backup your data on google drive or in downloadable CSV or both. So you can switch device and still have your notes and data.'
@@ -120,74 +162,137 @@ const Box = (props: iBox) => {
       style={{
         padding: "0 8px",
         marginBottom: 10,
-        backgroundColor: highlight ? "green" : "transparent",
+        backgroundColor: highlight ? "#27ae60" : "transparent",
         textAlign: "left",
       }}
     >
-      <button
-        disabled={comingSoon}
-        onMouseDown={() =>
-          heading !== "Turn On/Off Animations" && onMouseDown(heading)
-        }
-        style={{
-          width: "100%",
-          opacity: comingSoon ? 0.5 : 1,
-          padding: "10px 0",
-          cursor: comingSoon ? "no-drop" : "pointer",
-        }}
-      >
+      {heading === "Turn On/Off Notifications" ? (
         <div
           style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
+            width: "100%",
+            padding: "10px 0",
           }}
         >
-          <div>
-            <h3
-              style={{
-                fontSize: 20,
-                color: highlight ? "#fff" : "#000",
-                margin: 0,
-                fontWeight: "normal",
-              }}
-            >
-              {heading}
-            </h3>
-            {heading === "Turn On/Off Animations" && (
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+          >
+            <div>
+              <h3
+                style={{
+                  fontSize: 20,
+                  color: highlight ? "#fff" : "#000",
+                  margin: 0,
+                  fontWeight: "normal",
+                }}
+              >
+                {heading}
+              </h3>
+
               <Dropdown
-                title='Animations'
+                title='Notifications'
                 options={[
                   { id: "3418704314", title: "On" },
                   { id: "3849189021", title: "Off" },
                 ]}
-                selected={boxInfo?.animations}
+                selected={boxInfo?.notifications}
                 setSelected={(val) => onMouseDown(val)}
               />
-            )}
+              {boxInfo?.alertMsg && (
+                <p
+                  style={{
+                    margin: 0,
+                    marginBottom: "7px",
+                    fontSize: 13,
+                    color: "#372f28",
+                  }}
+                >
+                  {boxInfo?.alertMsg}
+                </p>
+              )}
+              {/* {Notification.permission === "granted" && boxInfo.notifications === 'On'
+                    ? "Notifications are active."
+                    : Notification.permission === "denied" && 
+                    ? "You have blocked notification permission."
+                    : Notification.permission === "default"
+                    ? "Please allow notification permission to receive notifications."
+                    : null} */}
+            </div>
           </div>
-          {heading === "Reminder Time" && (
-            <p style={{ fontSize: 20, margin: 0 }}>6:00 am</p>
+          {desc && (
+            <p
+              style={{
+                color: highlight ? "#fff" : "#000",
+                paddingBottom: highlight ? 6 : 0,
+                margin: 0,
+                textAlign: "left",
+              }}
+            >
+              {desc}
+            </p>
+          )}
+          {comingSoon && (
+            <p style={{ color: "red", textAlign: "left", margin: 0 }}>
+              coming soon
+            </p>
           )}
         </div>
-        {desc && (
-          <p
+      ) : (
+        <button
+          disabled={comingSoon}
+          onMouseDown={() => onMouseDown(heading)}
+          style={{
+            width: "100%",
+            opacity: comingSoon ? 0.5 : 1,
+            padding: "10px 0",
+            cursor: comingSoon ? "no-drop" : "pointer",
+          }}
+        >
+          <div
             style={{
-              color: highlight ? "#fff" : "#000",
-              paddingBottom: highlight ? 6 : 0,
-              margin: 0,
-              textAlign: "left",
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
             }}
           >
-            {desc}
-          </p>
-        )}
-        {comingSoon && (
-          <p style={{ color: "red", textAlign: "left", margin: 0 }}>
-            coming soon
-          </p>
-        )}
-      </button>
+            <div>
+              <h3
+                style={{
+                  fontSize: 20,
+                  color: highlight ? "#fff" : "#000",
+                  margin: 0,
+                  fontWeight: "normal",
+                }}
+              >
+                {heading}
+              </h3>
+            </div>
+            {heading === "Reminder Time" && (
+              <p style={{ fontSize: 20, margin: 0 }}>6:00 am</p>
+            )}
+          </div>
+          {desc && (
+            <p
+              style={{
+                color: highlight ? "#fff" : "#000",
+                paddingBottom: highlight ? 6 : 0,
+                margin: 0,
+                textAlign: "left",
+              }}
+            >
+              {desc}
+            </p>
+          )}
+          {comingSoon && (
+            <p style={{ color: "red", textAlign: "left", margin: 0 }}>
+              coming soon
+            </p>
+          )}
+        </button>
+      )}
       {/* {heading === "Share" && shared === "I shared" ? (
         <Button
           title='I shared'

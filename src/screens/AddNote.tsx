@@ -45,14 +45,30 @@ export default function AddNote(props: {
       },
       {
         id: "7194853255",
-        text: "Thanks!",
-        reply: "You're welcome",
+        text: "Thanks! And turn on notifications.",
+        reply: "You're welcome. Please allow notification permission.",
         executeFunction: () => {
-          localStorage.setItem("firstNote", "false");
-          setTimeout(() => {
-            setFirstNote(false);
-          }, 3000);
+          Notification.requestPermission().then((permission) => {
+            if (permission === "granted") {
+              localStorage.setItem("notifications", JSON.stringify("On"));
+            } else {
+              localStorage.setItem("notifications", JSON.stringify("Off"));
+            }
+          });
         },
+        indent: [
+          {
+            id: "3841829741",
+            text: "👍",
+            reply: "👍",
+            executeFunction: () => {
+              localStorage.setItem("firstNote", "false");
+              setTimeout(() => {
+                setFirstNote(false);
+              }, 3000);
+            },
+          },
+        ],
       },
     ],
   ];
@@ -112,7 +128,6 @@ export default function AddNote(props: {
   }, [addNoteActive]);
 
   const keyDownFunc = (e: any) => {
-    // console.log("run", addNoteActive, e.key === "Escape");
     if (addNoteActive) {
       if (e.ctrlKey && e.key === "Enter") {
         addBtnRef?.current?.click();

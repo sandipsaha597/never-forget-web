@@ -86,6 +86,11 @@ const Main = () => {
     constants: { rewardMsgTimeoutTime },
   } = useContext<any>(AppContext);
   const location = useLocation();
+  useEffect(() => {
+    if (localStorage.getItem("firstNote") === "false") {
+      noNotesNotification(isAnyNoteActive);
+    }
+  }, [isAnyNoteActive]);
 
   return (
     <>
@@ -281,6 +286,9 @@ export const LogoAndVersion = () => {
 // fontFamily: "staatliches-regular",
 
 const noNotesNotification = async (isAnyNoteActive: boolean) => {
+  if (JSON.parse(localStorage.getItem("notifications") as any) !== "On") {
+    return;
+  }
   const reg = await navigator.serviceWorker.getRegistration();
   const allNotifications = await reg?.getNotifications({
     // @ts-ignore
@@ -298,24 +306,19 @@ const noNotesNotification = async (isAnyNoteActive: boolean) => {
           add(startOfDay(new Date()), { days: 1, hours: 6 }),
           new Date()
         ) * 1000;
-      Notification.requestPermission().then((permission) => {
-        if (permission !== "granted") {
-          alert("you need to allow push notifications");
-        } else {
-          reg?.showNotification("Your Note box is empty 📁", {
-            tag: "SS-EmptyNoteBox", // a unique ID
-            body: "Add notes so you Never Forget what's important to you!", // content of the push notification
-            // @ts-ignore
-            // showTrigger: new TimestampTrigger(new Date().getTime() + trigger), // set the time for the push notification
-            showTrigger: new TimestampTrigger(new Date().getTime() + trigger), // set the time for the push notification
-            data: {
-              url: window.location.href, // pass the current url to the notification
-            },
-            badge: "../assets/icons/done.svg",
-            icon: "../assets/icons/done.svg",
-          });
-        }
-      });
+      if (Notification.permission !== "granted") {
+        // alert("you need to allow push notifications");
+      } else {
+        reg?.showNotification("Your Note box is empty 📁", {
+          tag: "SS-EmptyNoteBox", // a unique ID
+          body: "Add notes so you Never Forget what's important to you!", // content of the push notification
+          // @ts-ignore
+          // showTrigger: new TimestampTrigger(new Date().getTime() + trigger), // set the time for the push notification
+          showTrigger: new TimestampTrigger(new Date().getTime() + trigger), // set the time for the push notification
+          badge: logoInBase64,
+          icon: logoInBase64,
+        });
+      }
     }
   }
 };

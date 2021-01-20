@@ -79,7 +79,6 @@ const screenWidth = window.screen.width;
 if (window.screen.width < 768) {
   placeholderArray = placeholderArray.slice(0, 15);
 }
-console.log(placeholderArray);
 export default function AllNotes(props: {
   recycleBin?: boolean;
   setEditNoteNumber?: (index: number) => void;

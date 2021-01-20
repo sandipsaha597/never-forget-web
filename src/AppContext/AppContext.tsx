@@ -1,6 +1,11 @@
+import { add, differenceInSeconds, format } from "date-fns";
 import React, { useState, createContext, useEffect, useRef } from "react";
 import { v4 as uuidV4 } from "uuid";
-import { isAnyNoteActiveFunc, isRecycleBinEmptyFunc } from "../util/util";
+import {
+  isAnyNoteActiveFunc,
+  isRecycleBinEmptyFunc,
+  logoInBase64,
+} from "../util/util";
 
 export const AppContext = createContext<any>({});
 
@@ -19,7 +24,6 @@ export function AppProvider(props: any) {
   const [isRecycleBinEmpty, setIsRecycleBinEmpty] = useState<boolean | null>(
     null
   );
-  const [animations, setAnimations] = useState<"On" | "Off">("On");
 
   const [subs, setSubs] = useState<{ id: string; title: string }[]>([
     {
@@ -51,7 +55,6 @@ export function AppProvider(props: any) {
       knowSpacedRepetition,
       allNotes,
       subs,
-      animations,
       isAnyNoteActive,
       isRecycleBinEmpty,
     },
@@ -84,29 +87,9 @@ export function AppProvider(props: any) {
       setIsRecycleBinEmpty(val: boolean) {
         saveAndUpdate("isRecycleBinEmpty", setIsRecycleBinEmpty, val);
       },
-      setAnimations(val: "On" | "Off") {
-        saveAndUpdate("animations", setAnimations, val);
-      },
     },
   };
 
-  const saveAndUpdate = async (save: string, update: any, value: any) => {
-    try {
-      await localStorage.setItem(save, JSON.stringify(value));
-      update(value);
-    } catch (err) {
-      alert(err);
-      console.log("err", err);
-    }
-  };
-  const closeAllNotifications = async () => {
-    const reg = await navigator.serviceWorker.getRegistration();
-    const notifications = await reg?.getNotifications({
-      // @ts-ignore
-      includeTriggered: true,
-    });
-    notifications?.forEach((notification) => notification.close());
-  };
   // localStorage.removeItem("knowSpacedRepetition");
   // localStorage.removeItem("firstNote");
   // localStorage.removeItem("allNotes");
@@ -114,31 +97,7 @@ export function AppProvider(props: any) {
   // localStorage.removeItem("isAnyNoteActive");
   // localStorage.removeItem("isRecycleBinEmpty");
   // localStorage.removeItem("subs");
-  // localStorage.removeItem("animations");
-
-  // contextValue.actions.setSubs([
-  //   "English",
-  //   "Math",
-  //   "Geography",
-  //   "History",
-  //   "jalapino",
-  //   "HTML",
-  //   "--None--",
-  // ]);
-  const setItem = (toSet: any, itemName: string) => {
-    const value = localStorage.getItem(itemName);
-    if (value) {
-      if (itemName === "allNotes") {
-        const tempValue = JSON.parse(value);
-        tempValue.forEach((v: any) => {
-          v.show = true;
-        });
-        toSet(tempValue);
-      } else {
-        toSet(JSON.parse(value) as any);
-      }
-    }
-  };
+  // localStorage.removeItem("notifications");
 
   const retrieveAllNotesDeleteAndRecycleBinStatus = () => {
     if (isAnyNoteActive === null) {
@@ -173,7 +132,7 @@ export function AppProvider(props: any) {
     retrieveAllNotesDeleteAndRecycleBinStatus();
     setItem(setKnowSpacedRepetition, "knowSpacedRepetition");
     setItem(setSubs, "subs");
-    setItem(setAnimations, "animations");
+    // setItem(setNotifications, "notifications");
   }, []);
 
   return (
@@ -183,6 +142,79 @@ export function AppProvider(props: any) {
   );
 }
 
+export const saveAndUpdate = (save: string, update: any, value: any) => {
+  try {
+    localStorage.setItem(save, JSON.stringify(value));
+    update(value);
+  } catch (err) {
+    alert(err);
+    console.log("err", err);
+  }
+};
+
+export const setItem = (toSet: any, itemName: string) => {
+  const value = localStorage.getItem(itemName);
+  if (value) {
+    if (itemName === "allNotes") {
+      const tempValue = JSON.parse(value);
+      tempValue.forEach((v: any) => {
+        v.show = true;
+      });
+      toSet(tempValue);
+    } else {
+      toSet(JSON.parse(value) as any);
+    }
+  }
+};
+export const closeAllNotifications = async () => {
+  const reg = await navigator.serviceWorker.getRegistration();
+  const notifications = await reg?.getNotifications({
+    // @ts-ignore
+    includeTriggered: true,
+  });
+  notifications?.forEach((notification) => notification.close());
+};
+
+export const scheduleAllNotifications = async (done: any) => {
+  closeAllNotifications();
+  const reg = await navigator.serviceWorker.getRegistration();
+  const storedAllNotes = JSON.parse(localStorage.getItem("allNotes") as any);
+  const structuredAllNotes: any = {};
+
+  storedAllNotes.forEach((v: any) => {
+    if (v.deleted) return;
+    v.revisions.forEach((date: any) => {
+      if (structuredAllNotes[date]) {
+        structuredAllNotes[date] =
+          structuredAllNotes[date] + "\n" + "🗒️ " + v.title + " 📖";
+      } else {
+        structuredAllNotes[date] = "🗒️ " + v.title + " 📖";
+      }
+    });
+  });
+
+  for (let i in structuredAllNotes) {
+    const trigger =
+      differenceInSeconds(
+        // add(startOfDay(new Date()), { days: 0, hours: 13, minutes: 11 }),
+        // add(new Date(note.revisions[0]), { hours: 14, minutes: 18 }),
+        add(new Date(i), { hours: 6 }),
+        new Date()
+      ) * 1000;
+    if (Math.sign(trigger) === 1) {
+      reg?.showNotification("Review your notes, so you Never Forget them! 📔", {
+        tag: format(new Date(i), "dd-MM-yyyy"), // a unique ID
+        body: structuredAllNotes[i], // content of the push notification
+        // @ts-ignore
+        showTrigger: new TimestampTrigger(new Date().getTime() + trigger), // set the time for the push notification
+        badge: logoInBase64,
+        icon: logoInBase64,
+      });
+    }
+  }
+
+  done("Done!");
+};
 // interfaces
 
 export interface IAllNotes {

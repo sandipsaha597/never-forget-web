@@ -50,14 +50,30 @@ export default function AddNoteMobile(props: {
       },
       {
         id: "7194853255",
-        text: "Thanks!",
-        reply: "You're welcome",
+        text: "Thanks! And turn on notifications.",
+        reply: "You're welcome. Please allow notification permission.",
         executeFunction: () => {
-          localStorage.setItem("firstNote", "false");
-          setTimeout(() => {
-            setFirstNote(false);
-          }, 3000);
+          Notification.requestPermission().then((permission) => {
+            if (permission === "granted") {
+              localStorage.setItem("notifications", JSON.stringify("On"));
+            } else {
+              localStorage.setItem("notifications", JSON.stringify("Off"));
+            }
+          });
         },
+        indent: [
+          {
+            id: "3841829741",
+            text: "👍",
+            reply: "👍",
+            executeFunction: () => {
+              localStorage.setItem("firstNote", "false");
+              setTimeout(() => {
+                setFirstNote(false);
+              }, 3000);
+            },
+          },
+        ],
       },
     ],
   ];

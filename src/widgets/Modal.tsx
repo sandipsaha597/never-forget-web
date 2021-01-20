@@ -159,11 +159,9 @@ export default function Modal(props: {
             </p>
           ) : null
         ) : (
-          <span
-            style={{ textAlign: center ? "center" : "left", color: "#fff" }}
-          >
+          <div style={{ textAlign: center ? "center" : "left", color: "#fff" }}>
             {text}
-          </span>
+          </div>
         )}
       </div>
 

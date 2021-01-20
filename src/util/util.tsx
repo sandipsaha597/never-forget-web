@@ -22,6 +22,9 @@ export async function schedulePushNotification(
   type: string | boolean,
   title: string
 ) {
+  if (JSON.parse(localStorage.getItem("notifications") as any) !== "On") {
+    return;
+  }
   // for (let i = note.revisionNumber + 1; i < note.revisionNumber + 2; i++) {
   const reg = await navigator.serviceWorker.getRegistration();
   const allNotifications = await reg?.getNotifications({
@@ -91,27 +94,21 @@ export async function schedulePushNotification(
       notificationObj?.close();
     } else if (Math.sign(trigger) !== -1) {
       notificationObj?.close();
-      Notification.requestPermission().then((permission) => {
-        if (permission !== "granted") {
-          alert("you need to allow push notifications");
-        } else {
-          reg?.showNotification(
-            "Review your notes, so you Never Forget them! 📔",
-            {
-              tag: format(revisionDate, "dd-MM-yyyy"), // a unique ID
-              body: body, // content of the push notification
-              // @ts-ignore
-              // showTrigger: new TimestampTrigger(new Date().getTime() + trigger), // set the time for the push notification
-              showTrigger: new TimestampTrigger(new Date().getTime() + trigger), // set the time for the push notification
-              data: {
-                url: window.location.href, // pass the current url to the notification
-              },
-              badge: logoInBase64,
-              icon: logoInBase64,
-            }
-          );
-        }
-      });
+      if (Notification.permission !== "granted") {
+        // alert("you need to allow push notifications");
+      } else {
+        reg?.showNotification(
+          "Review your notes, so you Never Forget them! 📔",
+          {
+            tag: format(revisionDate, "dd-MM-yyyy"), // a unique ID
+            body: body, // content of the push notification
+            // @ts-ignore
+            showTrigger: new TimestampTrigger(new Date().getTime() + 10000), // set the time for the push notification
+            badge: logoInBase64,
+            icon: logoInBase64,
+          }
+        );
+      }
     }
   }
 }
