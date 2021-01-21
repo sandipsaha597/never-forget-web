@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { AppContext } from "../AppContext/AppContext";
 import Dropdown from "../widgets/Dropdown";
-import { add, differenceInSeconds, format, startOfDay } from "date-fns/esm";
+import { add, startOfDay } from "date-fns/esm";
 import { v4 as uuidv4 } from "uuid";
 import done from "../assets/icons/done.svg";
 import leftArrow from "../assets/icons/left-arrow-white.svg";
@@ -64,8 +64,7 @@ export default function AddNoteMobile(props: {
                   body:
                     "If you have revision(s), You'll receive a notification of your revision(s) at 6:00am", // content of the push notification
                   // @ts-ignore
-                  // showTrigger: new TimestampTrigger(new Date().getTime() + trigger), // set the time for the push notification
-                  showTrigger: new TimestampTrigger(new Date().getTime() + 10), // set the time for the push notification
+                  showTrigger: new TimestampTrigger(new Date().getTime()), // set the time for the push notification
                   badge: logoInBase64,
                   icon: logoInBase64,
                 });
@@ -251,7 +250,7 @@ export default function AddNoteMobile(props: {
             }
           }}
         >
-          <img style={{ width: "30px" }} src={leftArrow} alt='close' />
+          <img style={{ width: "20px" }} src={leftArrow} alt='close' />
         </button>
         <button
           disabled={title.trim() === "" ? true : false || !addNoteActive}
@@ -264,7 +263,7 @@ export default function AddNoteMobile(props: {
             }
           }}
         >
-          <img style={{ width: "30px" }} src={done} alt='save note' />
+          <img style={{ width: "20px" }} src={done} alt='save note' />
         </button>
       </div>
       <div
@@ -356,7 +355,7 @@ export default function AddNoteMobile(props: {
             width: "30%",
             minWidth: "245px",
             position: "absolute",
-            bottom: "24px",
+            bottom: "10%",
             left: "6%",
           }}
         >

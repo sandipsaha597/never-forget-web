@@ -22,7 +22,7 @@ export async function schedulePushNotification(
   type: string | boolean,
   title: string
 ) {
-  if (JSON.parse(localStorage.getItem("notifications") || '') !== "On") {
+  if (JSON.parse(localStorage.getItem("notifications") || "") !== "On") {
     return;
   }
   // for (let i = note.revisionNumber + 1; i < note.revisionNumber + 2; i++) {
@@ -103,7 +103,7 @@ export async function schedulePushNotification(
             tag: format(revisionDate, "dd-MM-yyyy"), // a unique ID
             body: body, // content of the push notification
             // @ts-ignore
-            showTrigger: new TimestampTrigger(new Date().getTime() + 10000), // set the time for the push notification
+            showTrigger: new TimestampTrigger(new Date().getTime() + trigger), // set the time for the push notification
             badge: logoInBase64,
             icon: logoInBase64,
           }

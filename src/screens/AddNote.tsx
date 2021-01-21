@@ -1,13 +1,12 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { AppContext } from "../AppContext/AppContext";
 import Dropdown from "../widgets/Dropdown";
-import { add, differenceInSeconds, format, startOfDay } from "date-fns/esm";
+import { add, startOfDay } from "date-fns/esm";
 import { v4 as uuidv4 } from "uuid";
 import Modal from "../widgets/Modal";
 import done from "../assets/icons/done.svg";
 import leftArrow from "../assets/icons/left-arrow-white.svg";
 import { logoInBase64, schedulePushNotification } from "../util/util";
-import { useLocation } from "react-router";
 
 export default function AddNote(props: {
   editNoteNumber: number;
@@ -58,8 +57,7 @@ export default function AddNote(props: {
                   body:
                     "If you have revision(s), You'll receive a notification of your revision(s) at 6:00am", // content of the push notification
                   // @ts-ignore
-                  // showTrigger: new TimestampTrigger(new Date().getTime() + trigger), // set the time for the push notification
-                  showTrigger: new TimestampTrigger(new Date().getTime() + 10), // set the time for the push notification
+                  showTrigger: new TimestampTrigger(new Date().getTime()), // set the time for the push notification
                   badge: logoInBase64,
                   icon: logoInBase64,
                 });
@@ -126,21 +124,6 @@ export default function AddNote(props: {
     }
   }, [addNoteActive]);
 
-  useEffect(() => {
-    //esc button
-    // BackHandler.addEventListener("hardwareBackPress", () => {
-    //   if (isAddNoteOpen.current) {
-    //     if (editNoeNumber >= 0) {
-    //       setTimeout(() => {
-    //         setTitle("");
-    //         setDesc("");
-    //         setEditNoteNumber(-1);
-    //       }, 1000);
-    //     }
-    //     return true;
-    //   }
-    // });
-  }, [editNoteNumber]);
   useEffect(() => {
     // window.removeEventListener("keydown", keyDownFunc);
     window.addEventListener("keydown", keyDownFunc);

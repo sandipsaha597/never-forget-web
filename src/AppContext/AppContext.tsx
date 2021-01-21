@@ -1,6 +1,5 @@
 import { add, differenceInSeconds, format } from "date-fns";
-import React, { useState, createContext, useEffect, useRef } from "react";
-import { v4 as uuidV4 } from "uuid";
+import React, { useState, createContext, useEffect } from "react";
 import {
   isAnyNoteActiveFunc,
   isRecycleBinEmptyFunc,

@@ -1,31 +1,19 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
-  AppContext,
-  EnumSpacedRepetition,
   closeAllNotifications,
   scheduleAllNotifications,
   saveAndUpdate,
   setItem,
 } from "../AppContext/AppContext";
-import AllNotes from "./AllNotes";
-import { add, differenceInSeconds, format } from "date-fns";
 import Dropdown from "../widgets/Dropdown";
-import { Route, Routes, useNavigate } from "react-router";
+import { useNavigate } from "react-router";
 import { LogoAndVersion } from "../App";
-import { logoInBase64, schedulePushNotification } from "../util/util";
+import { logoInBase64 } from "../util/util";
 
 export default function Settings() {
-  const [page, setPage] = useState<string>("none");
-  const [shared, setShared] = useState("none");
-  const [
-    rescheduleNotificationsProgress,
-    setRescheduleNotificationsProgress,
-  ] = useState<any>(false);
+  // const [shared, setShared] = useState("none");
   const [notifications, setNotifications] = useState<"On" | "Off">("Off");
   const [alertMsg, setAlertMsg] = useState("");
-  const {
-    actions: { setKnowSpacedRepetition },
-  } = useContext<any>(AppContext);
 
   const navigate = useNavigate();
   useEffect(() => {
@@ -39,15 +27,6 @@ export default function Settings() {
   }, []);
   return (
     <div className='settings'>
-      {/* <Box
-        heading='Reschedule Notifications'
-        desc='Click here if your phone/tab was rebooted/restarted so you can get notifications to review your notes correctly.'
-        highlight
-        onMouseDown={(val: string) => {
-          rescheduleNotifications(setRescheduleNotificationsProgress);
-          setPage(val);
-        }}
-      /> */}
       <Box
         heading='Turn On/Off Notifications'
         desc="This feature is experimental. It may not work as expected in your device. Usually it works fine with Chrome. And we don't spam."
@@ -62,7 +41,6 @@ export default function Settings() {
                     body:
                       "If you have revision(s), You'll receive a notification of your revision(s) at 6:00am", // content of the push notification
                     // @ts-ignore
-                    // showTrigger: new TimestampTrigger(new Date().getTime() + trigger), // set the time for the push notification
                     showTrigger: new TimestampTrigger(new Date().getTime()), // set the time for the push notification
                     badge: logoInBase64,
                     icon: logoInBase64,
@@ -129,15 +107,19 @@ export default function Settings() {
       {/* Share with 2 people and get 2 months ad free. We won't really track whether you shared our app or not, we'll just trust your words. */}
       <Box
         heading='Contact Us'
-        onMouseDown={(val: string) =>
+        desc='sandipsaha564@gmail.com'
+        onMouseDown={(val: string) => {
           // Linking.openURL("mailto:sandipsaha564@gmail.com")
           // window.location.href = "mailto:mail@example.org"
-          // window.open("mailto:sandipsaha564@gmail.com", "_blank")
-          window.open(
-            "https://mail.google.com/mail/?view=cm&fs=1&to=sandipsaha564@gmail.com",
-            "_blank"
-          )
-        }
+          if (window.screen.width < 992) {
+            window.open("mailto:sandipsaha564@gmail.com", "_blank");
+          } else {
+            window.open(
+              "https://mail.google.com/mail/?view=cm&fs=1&to=sandipsaha564@gmail.com",
+              "_blank"
+            );
+          }
+        }}
       />
       <Box
         heading='Privacy Policy'
@@ -167,8 +149,8 @@ const Box = (props: iBox) => {
     comingSoon,
     onMouseDown,
     highlight,
-    shared,
-    setShared,
+    // shared,
+    // setShared,
     boxInfo,
   } = props;
   return (
@@ -333,89 +315,46 @@ const Box = (props: iBox) => {
 export const PrivacyPolicy = () => {
   useEffect(() => {
     document.title = "Privacy Policy | Never Forget";
+
+    window.scrollTo(0, 0);
   }, []);
   return (
     <div className='info-page'>
-      <h1 style={{ fontSize: 20, fontWeight: "bold", marginTop: 15 }}>
-        Privacy Policy
-      </h1>
-      <p>
-        Sandip built the Never Forget app as an Ad Supported app. This SERVICE
-        is provided by Sandip at no cost and is intended for use as is. This
-        page is used to inform visitors regarding my policies with the
-        collection, use, and disclosure of Personal Information if anyone
-        decided to use my Service. If you choose to use my Service, then you
-        agree to the collection and use of information in relation to this
-        policy. The Personal Information that I collect is used for providing
-        and improving the Service. I will not use or share your information with
-        anyone except as described in this Privacy Policy. The terms used in
-        this Privacy Policy have the same meanings as in our Terms and
-        Conditions, which is accessible at Never Forget unless otherwise defined
-        in this Privacy Policy.
-      </p>
-      <p
-        style={{
-          fontSize: 20,
-          fontWeight: "bold",
-          marginTop: 15,
-        }}
+      <h2
+        style={{ fontSize: 20, fontWeight: "bold", margin: 0, marginTop: 15 }}
       >
-        Information Collection and Use
+        Privacy Policy
+      </h2>
+      <p style={{ margin: "7px 0" }}>
+        Sandip Saha built the Never Forget app as an Ad Supported app. This
+        SERVICE is provided by Sandip at no cost and is intended for use as is.
+        This page is used to inform visitors regarding my policies with the
+        collection, use, and disclosure of Personal Information if anyone
+        decided to use my Service. Never Forget does not collect any information
+        from the user. But Never Forget use Google analytics and they may
+        collect data as needed.{" "}
+        <a href='https://policies.google.com/privacy?hl=en-US'>
+          Google's privacy policy
+        </a>
       </p>
-      <p>
-        For a better experience, while using our Service, I may require you to
-        provide us with certain personally identifiable information. The
-        information that I request will be retained on your device and is not
-        collected by me in any way. The app does use third party services that
-        may collect information used to identify you. Link to privacy policy of
-        third party service providers used by the app *
-        [AdMob](https://support.google.com/admob/answer/6128543?hl=en)
-      </p>
-      <p style={{ fontSize: 20, fontWeight: "bold", marginTop: 15 }}>
-        Log Data
-      </p>
-      <p>
-        I want to inform you that whenever you use my Service, in a case of an
-        error in the app I collect data and information (through third party
-        products) on your phone called Log Data. This Log Data may include
-        information such as your device Internet Protocol (“IP”) address, device
-        name, operating system version, the configuration of the app when
-        utilizing my Service, the time and date of your use of the Service, and
-        other statistics.
-      </p>
-      <p style={{ fontSize: 20, fontWeight: "bold", marginTop: 15 }}>Cookies</p>
-      <p>
-        Cookies are files with a small amount of data that are commonly used as
-        anonymous unique identifiers. These are sent to your browser from the
-        websites that you visit and are stored on your device's internal memory.
-        This Service does not use these “cookies” explicitly. However, the app
-        may use third party code and libraries that use “cookies” to collect
-        information and improve their services. You have the option to either
-        accept or refuse these cookies and know when a cookie is being sent to
-        your device. If you choose to refuse our cookies, you may not be able to
-        use some portions of this Service. **Service Providers** I may employ
-        third-party companies and individuals due to the following reasons: * To
-        facilitate our Service; * To provide the Service on our behalf; * To
-        perform Service-related services; or * To assist us in analyzing how our
-        Service is used. I want to inform users of this Service that these third
-        parties have access to your Personal Information. The reason is to
-        perform the tasks assigned to them on our behalf. However, they are
-        obligated not to disclose or use the information for any other purpose.
-      </p>
-      <p style={{ fontSize: 20, fontWeight: "bold", marginTop: 15 }}>
+      <h2
+        style={{ fontSize: 20, fontWeight: "bold", margin: 0, marginTop: 15 }}
+      >
         Security
-      </p>
-      <p>
+      </h2>
+      <p style={{ margin: "7px 0" }}>
         I value your trust in providing us your Personal Information, thus we
         are striving to use commercially acceptable means of protecting it. But
         remember that no method of transmission over the internet, or method of
         electronic storage is 100% secure and reliable, and I cannot guarantee
         its absolute security.
       </p>
-      <p style={{ fontSize: 20, fontWeight: "bold", marginTop: 15 }}>
+      <h2
+        style={{ fontSize: 20, fontWeight: "bold", margin: 0, marginTop: 15 }}
+      >
         Links to Other Sites
-      </p>
-      <p>
+      </h2>
+      <p style={{ margin: "7px 0" }}>
         This Service may contain links to other sites. If you click on a
         third-party link, you will be directed to that site. Note that these
         external sites are not operated by me. Therefore, I strongly advise you
@@ -423,30 +362,22 @@ export const PrivacyPolicy = () => {
         and assume no responsibility for the content, privacy policies, or
         practices of any third-party sites or services.
       </p>
-      <p style={{ fontSize: 20, fontWeight: "bold", marginTop: 15 }}>
-        Children’s Privacy
-      </p>
-      <p>
-        These Services do not address anyone under the age of 13. I do not
-        knowingly collect personally identifiable information from children
-        under 13. In the case I discover that a child under 13 has provided me
-        with personal information, I immediately delete this from our servers.
-        If you are a parent or guardian and you are aware that your child has
-        provided us with personal information, please contact me so that I will
-        be able to do necessary actions.
-      </p>
-      <p style={{ fontSize: 20, fontWeight: "bold", marginTop: 15 }}>
+      <h2
+        style={{ fontSize: 20, fontWeight: "bold", margin: 0, marginTop: 15 }}
+      >
         Changes to This Privacy Policy
-      </p>
-      <p>
+      </h2>
+      <p style={{ margin: "7px 0" }}>
         I may update our Privacy Policy from time to time. Thus, you are advised
         to review this page periodically for any changes. I will notify you of
         any changes by posting the new Privacy Policy on this page.
       </p>
-      <p style={{ fontSize: 20, fontWeight: "bold", marginTop: 15 }}>
+      <h2
+        style={{ fontSize: 20, fontWeight: "bold", margin: 0, marginTop: 15 }}
+      >
         Contact Us
-      </p>
-      <p>
+      </h2>
+      <p style={{ margin: "7px 0" }}>
         If you have any questions or suggestions about my Privacy Policy, do not
         hesitate to contact me at sandipsaha564@gmail.com. This privacy policy
         page was created at
@@ -469,12 +400,131 @@ export const Credits = () => {
       </h2>
       <p>Sandip Saha</p>
       <h2 style={{ fontSize: 20, fontWeight: "bold", marginTop: 15 }}>Icons</h2>
-      <p>Icon made by Vectors Market from www.flaticon.com</p>
-      <p>Icon made by Freepik from www.flaticon.com</p>
-      <p>Icon made by ultimatearm from www.flaticon.com</p>
-      <p>Icon made by Pixelmeetup from www.flaticon.com</p>
-      <p>Icon made by Smashicons from www.flaticon.com</p>
-      <p>Icon made by Eucalyp from www.flaticon.com</p>
+      <div>
+        Icons made by{" "}
+        <a href='https://www.flaticon.com/authors/freepik' title='Freepik'>
+          Freepik
+        </a>{" "}
+        from{" "}
+        <a href='https://www.flaticon.com/' title='Flaticon'>
+          www.flaticon.com
+        </a>
+      </div>
+      <div>
+        Icons made by{" "}
+        <a
+          href='https://www.flaticon.com/free-icon/calendar_425868?term=calender&page=2&position=48&related_item_id=425868'
+          title='Vectors Market'
+        >
+          Vectors Market
+        </a>{" "}
+        from{" "}
+        <a href='https://www.flaticon.com/' title='Flaticon'>
+          www.flaticon.com
+        </a>
+      </div>
+      <div>
+        Icons made by{" "}
+        <a
+          href='https://www.flaticon.com/authors/roundicons'
+          title='Roundicons'
+        >
+          Roundicons
+        </a>{" "}
+        from{" "}
+        <a href='https://www.flaticon.com/' title='Flaticon'>
+          www.flaticon.com
+        </a>
+      </div>
+      <div>
+        Icons made by{" "}
+        <a
+          href='https://www.flaticon.com/authors/pixelmeetup'
+          title='Pixelmeetup'
+        >
+          Pixelmeetup
+        </a>{" "}
+        from{" "}
+        <a href='https://www.flaticon.com/' title='Flaticon'>
+          www.flaticon.com
+        </a>
+      </div>
+      <div>
+        Icons made by{" "}
+        <a href='https://www.flaticon.com/authors/google' title='Google'>
+          Google
+        </a>{" "}
+        from{" "}
+        <a href='https://www.flaticon.com/' title='Flaticon'>
+          www.flaticon.com
+        </a>
+      </div>
+      <div>
+        Icons made by{" "}
+        <a
+          href='https://www.flaticon.com/authors/vectors-market'
+          title='Vectors Market'
+        >
+          Vectors Market
+        </a>{" "}
+        from{" "}
+        <a href='https://www.flaticon.com/' title='Flaticon'>
+          www.flaticon.com
+        </a>
+      </div>
+      <div>
+        Icons made by{" "}
+        <a href='https://www.flaticon.com/authors/srip' title='srip'>
+          srip
+        </a>{" "}
+        from{" "}
+        <a href='https://www.flaticon.com/' title='Flaticon'>
+          www.flaticon.com
+        </a>
+      </div>
+      <div>
+        Icons made by{" "}
+        <a href='https://www.flaticon.com/authors/eucalyp' title='Eucalyp'>
+          Eucalyp
+        </a>{" "}
+        from{" "}
+        <a href='https://www.flaticon.com/' title='Flaticon'>
+          www.flaticon.com
+        </a>
+      </div>
+      <div>
+        Icons made by{" "}
+        <a
+          href='https://www.flaticon.com/authors/smashicons'
+          title='Smashicons'
+        >
+          Smashicons
+        </a>{" "}
+        from{" "}
+        <a href='https://www.flaticon.com/' title='Flaticon'>
+          www.flaticon.com
+        </a>
+      </div>
+      <div>
+        Icons made by{" "}
+        <a href='https://www.flaticon.com/authors/monkik' title='monkik'>
+          monkik
+        </a>{" "}
+        from{" "}
+        <a href='https://www.flaticon.com/' title='Flaticon'>
+          www.flaticon.com
+        </a>
+      </div>
+      <div>
+        Icons made by{" "}
+        <a href='https://www.flaticon.com/authors/bqlqn' title='bqlqn'>
+          bqlqn
+        </a>{" "}
+        from{" "}
+        <a href='https://www.flaticon.com/' title='Flaticon'>
+          www.flaticon.com
+        </a>
+      </div>
     </div>
   );
 };

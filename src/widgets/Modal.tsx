@@ -1,5 +1,4 @@
-import { useContext, useEffect, useRef, useState } from "react";
-import { AppContext } from "../AppContext/AppContext";
+import { useEffect, useRef, useState } from "react";
 
 export default function Modal(props: {
   text: string;
@@ -15,16 +14,6 @@ export default function Modal(props: {
   useEffect(() => {
     setChat(chatObj);
   }, [text]);
-
-  const {
-    constants: { rewardMsgTimeoutTime },
-  } = useContext<any>(AppContext);
-
-  // useEffect(() => {
-  //   if (noChat) {
-  //     setTimeout(() => {}, rewardMsgTimeoutTime);
-  //   }
-  // }, []);
 
   const reply = (clickedObj: any, i1: number, i2: number) => {
     const { id, reply, indent, executeFunction } = clickedObj;
@@ -51,24 +40,6 @@ export default function Modal(props: {
         });
       }, 1000);
     }
-    if (!!!indent) {
-      setTimeout(() => {
-        // Animated.timing(bottomValue, {
-        //   toValue: 50,
-        //   duration: 400,
-        //   easing: Easing.ease,
-        // }).start();
-        // opacityValueFunc();
-      }, 2500);
-    }
-  };
-
-  const opacityValueFunc = () => {
-    // Animated.timing(opacityValue, {
-    //   toValue: 0,
-    //   duration: 400,
-    //   easing: Easing.ease,
-    // }).start();
   };
 
   return (

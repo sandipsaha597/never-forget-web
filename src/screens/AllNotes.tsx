@@ -103,7 +103,7 @@ export default function AllNotes(props: {
     document.title = recycleBin
       ? "Recycle Bin | Never Forget"
       : "All Notes | Never Forget";
-  }, []);
+  }, [recycleBin]);
   useEffect(() => {
     const tempNotesToShow: any = [];
 
@@ -305,7 +305,7 @@ export default function AllNotes(props: {
                       <img
                         style={{ width: "20px" }}
                         src={leftArrow}
-                        alt='back'
+                        alt='close'
                       />
 
                       {/* <AntDesign name='arrowleft' size={24} color='black' /> */}
@@ -452,7 +452,7 @@ export const NoNotes = (props: { source?: any; text?: string }) => {
               })`,
       }}
     >
-      <img src={source ? source : box} />
+      <img src={source ? source : box} alt='empty' />
       <p>{text ? text : "No Notes yet"}</p>
     </div>
   );
@@ -512,6 +512,7 @@ const NoteBox = (props: {
         <img
           style={{ width: 40, height: 38, marginRight: 10 }}
           src={calender}
+          alt='date'
         />
         <div style={{ display: "flex", flexFlow: "column" }}>
           <span>{format(new Date(note.revisions[0]), "dd-MMM-yyyy")}</span>
@@ -549,7 +550,7 @@ const NoteBox = (props: {
               editNote && editNote(itemIndex);
             }}
           >
-            <img style={{ width: "30px" }} src={pencil} />
+            <img style={{ width: "30px" }} src={pencil} alt='edit' />
           </button>
         ) : (
           <button
@@ -562,7 +563,11 @@ const NoteBox = (props: {
             }}
           >
             <span style={{ color: "#fff", paddingRight: 6 }}>Restore</span>
-            <img style={{ height: 32, width: 32 }} src={restore} />
+            <img
+              style={{ height: 32, width: 32 }}
+              src={restore}
+              alt='restore'
+            />
           </button>
         )}
         <button
@@ -576,9 +581,9 @@ const NoteBox = (props: {
           }}
         >
           {recycleBin ? (
-            <img style={{ width: "30px" }} src={deleteIcon} />
+            <img style={{ width: "30px" }} src={deleteIcon} alt='delete' />
           ) : (
-            <img style={{ width: "30px" }} src={softDeleteIcon} />
+            <img style={{ width: "30px" }} src={softDeleteIcon} alt='soft delete' />
           )}
         </button>
       </div>

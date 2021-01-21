@@ -1,4 +1,27 @@
+/*
+* Prefixed by https://autoprefixer.github.io
+* PostCSS: v7.0.29,
+* Autoprefixer: v9.7.6
+* Browsers: last 4 version
+*/
+
 @import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Staatliches&display=swap");
+
+body {
+  background-color: #fff;
+  margin: 0;
+  font-family: "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans",
+    "Droid Sans", "Helvetica Neue", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-y: scroll;
+  word-break: break-word;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+    monospace;
+}
 
 .masonry:focus {
   outline: none;
@@ -31,6 +54,8 @@ button:disabled {
   background-color: rgb(221, 221, 221) !important;
 }
 .app-btn {
+  -webkit-transition: 0.4s ease-in-out;
+  -o-transition: 0.4s ease-in-out;
   transition: 0.4s ease-in-out;
 }
 .app-btn:hover {
@@ -41,6 +66,30 @@ button:disabled {
 }
 .addnote-input.search:focus {
   width: 50% !important;
+}
+.addnote-input::-webkit-input-placeholder,
+textarea::-webkit-input-placeholder,
+.addnote-mobile-input.search::-webkit-input-placeholder {
+  color: rgb(66, 66, 66);
+  font-family: "Roboto", "Arial";
+}
+.addnote-input::-moz-placeholder,
+textarea::-moz-placeholder,
+.addnote-mobile-input.search::-moz-placeholder {
+  color: rgb(66, 66, 66);
+  font-family: "Roboto", "Arial";
+}
+.addnote-input:-ms-input-placeholder,
+textarea:-ms-input-placeholder,
+.addnote-mobile-input.search:-ms-input-placeholder {
+  color: rgb(66, 66, 66);
+  font-family: "Roboto", "Arial";
+}
+.addnote-input::-ms-input-placeholder,
+textarea::-ms-input-placeholder,
+.addnote-mobile-input.search::-ms-input-placeholder {
+  color: rgb(66, 66, 66);
+  font-family: "Roboto", "Arial";
 }
 .addnote-input::placeholder,
 textarea::placeholder,
@@ -63,7 +112,12 @@ textarea {
   }
   .video-screen {
     position: relative;
+    display: -webkit-box;
+    display: -ms-flexbox;
     display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-flow: column;
     flex-flow: column;
     /* justify-content: space-between; */
     background-color: "red";
@@ -75,6 +129,8 @@ textarea {
   }
   .dropdown-and-modal {
     position: relative;
+    -webkit-box-flex: 1;
+    -ms-flex: 1;
     flex: 1;
     width: 86%;
     margin: 0 10px;
@@ -89,17 +145,29 @@ textarea {
   }
 
   .menu {
+    display: -webkit-box;
+    display: -ms-flexbox;
     display: flex;
+    -webkit-box-orient: horizontal;
+    -webkit-box-direction: normal;
+    -ms-flex-flow: row;
     flex-flow: row;
     box-shadow: 1px 0px 5px -1px rgba(0, 0, 0, 0.41);
     -webkit-box-shadow: 1px 0px 5px -1px rgba(0, 0, 0, 0.41);
     -moz-box-shadow: 1px 0px 5px -1px rgba(0, 0, 0, 0.41);
   }
   .menu a {
+    display: -webkit-box;
+    display: -ms-flexbox;
     display: flex;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
     align-items: center;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
     justify-content: center;
     width: 100%;
+    -webkit-box-sizing: border-box;
     box-sizing: border-box;
     text-decoration: none;
     padding: 12px 20px;
@@ -123,10 +191,19 @@ textarea {
     padding: 0 14px;
   }
   .no-notes {
+    display: -webkit-box;
+    display: -ms-flexbox;
     display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
     flex-direction: column;
     background-color: #fff;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
     justify-content: center;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
     align-items: center;
   }
   .no-notes img,
@@ -135,6 +212,7 @@ textarea {
   }
 
   .settings {
+    -webkit-box-sizing: border-box;
     box-sizing: border-box;
     padding: 3px 0px 100px 0px;
     width: 100%;
@@ -170,6 +248,9 @@ textarea {
     max-width: 100%;
   }
   .video-screen {
+    -webkit-box-orient: horizontal;
+    -webkit-box-direction: normal;
+    -ms-flex-flow: row;
     flex-flow: row;
   }
   .video {
@@ -184,11 +265,19 @@ textarea {
     width: 20%;
     height: 100vh;
     background: #e5e5e3;
+    display: -webkit-box;
+    display: -ms-flexbox;
     display: flex;
+    position: -webkit-sticky;
     position: sticky;
     top: 0;
     left: 0;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-flow: column;
     flex-flow: column;
+    -webkit-box-pack: justify;
+    -ms-flex-pack: justify;
     justify-content: space-between;
   }
 
@@ -196,10 +285,15 @@ textarea {
     box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, 0);
     -webkit-box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, 0);
     -moz-box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, 0);
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-flow: column;
     flex-flow: column;
   }
   .menu a {
     padding: 12px 20px;
+    -webkit-box-pack: start;
+    -ms-flex-pack: start;
     justify-content: flex-start;
   }
   .menu img {
@@ -275,7 +369,7 @@ textarea {
   }
 
   div.scroll::-webkit-scrollbar {
-    width: 5px !important;
+    width: 7px !important;
   }
 
   /* Track */

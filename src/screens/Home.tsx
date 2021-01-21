@@ -14,17 +14,15 @@ import fireCracker from "../assets/icons/fire-cracker.svg";
 import fireworks from "../assets/icons/fireworks.svg";
 import clapping from "../assets/icons/clapping.svg";
 import trophy from "../assets/icons/trophy.svg";
-import box from "../assets/icons/box.svg";
 import refresh from "../assets/icons/refresh.svg";
 import rightArrow from "../assets/icons/right-arrow.svg";
 import drawCheckMark from "../assets/icons/draw-check-mark.svg";
 import { NoNotes, placeholderArray } from "./AllNotes";
-import AddNote from "./AddNote";
 import { Masonry } from "masonic";
 
 const congratsIcons = [fireCracker, fireworks, clapping, trophy];
 
-const date = { active: false, days: 1, hours: 0 };
+const date = { active: false, days: 0, hours: 0 };
 
 // "Congrats",
 
@@ -194,7 +192,7 @@ export default function Home() {
                     : "calc(100vh - 150px)",
               }}
             >
-              <img src={rewardIcon} />
+              <img src={rewardIcon} alt='trophy' />
               <p
                 style={{
                   textAlign: "center",
@@ -334,7 +332,7 @@ const ReviewBox = (props: {
               <div style={{ display: "flex", alignItems: "center" }}>
                 <span style={{ color: "#ededed" }}>Skip</span>
                 {/* <Image source={require("../assets/icons/draw-check-mark.png")} /> */}
-                <img style={{ width: "30px" }} src={rightArrow} />
+                <img style={{ width: "30px" }} src={rightArrow} alt='skip' />
                 {/* <Image source={require("../assets/icons/draw-check-mark.png")} /> */}
               </div>
             </button>
@@ -344,7 +342,11 @@ const ReviewBox = (props: {
             onMouseDown={() => markAsRevised(itemIndex, note.id)}
           >
             {/* <p style={{marginRight: 10, fontSize: 20}} >Mark as read</p> */}
-            <img style={{ width: "30px" }} src={drawCheckMark} />
+            <img
+              style={{ width: "30px" }}
+              src={drawCheckMark}
+              alt='mark as revised'
+            />
           </button>
         </div>
       </div>

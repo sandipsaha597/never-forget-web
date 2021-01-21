@@ -1,7 +1,6 @@
-import { useState, useRef, useContext } from "react";
+import { useState, useContext } from "react";
 import { AppContext } from "../AppContext/AppContext";
 import { v4 as uuidV4 } from "uuid";
-// import arrowDown from ".//arrow-down-sign-to-navigate.svg";
 import arrowDown from "../assets/icons/arrow-down-sign-to-navigate.svg";
 import deleteSimple from "../assets/icons/delete-simple.svg";
 import add from "../assets/icons/plus-green.svg";
@@ -16,24 +15,11 @@ export default function Dropdown(props: {
   setSelected: (val: string) => void;
   addInput?: boolean;
   deleteAble?: boolean;
-  styles?: any;
 }) {
-  const {
-    title,
-    options,
-    selected,
-    setSelected,
-    addInput,
-    deleteAble,
-    styles,
-  } = props;
+  const { title, options, selected, setSelected, addInput, deleteAble } = props;
   const [addSubtext, setAddSubtext] = useState<string>("");
-  const isDropDownOpen = useRef(false);
   const [dropdown, setDropdown] = useState<"Open" | "Close">("Close");
 
-  const toggleDropdown = (toValue: number) => {
-    isDropDownOpen.current = toValue === 0 ? false : true;
-  };
   const {
     actions: { setSubs },
   } = useContext<any>(AppContext);
@@ -69,6 +55,7 @@ export default function Dropdown(props: {
       </button>
 
       <div
+        className='scroll'
         style={{
           maxHeight: dropdown === "Open" ? "200px" : "0px",
           transition: "0.4s ease-in-out",
@@ -116,7 +103,6 @@ export default function Dropdown(props: {
         )}
         {options.map((v: any, i: number) => (
           <div
-            className='scroll'
             key={v.id}
             style={{
               display: "flex",

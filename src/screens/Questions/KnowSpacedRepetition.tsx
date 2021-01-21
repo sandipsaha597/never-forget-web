@@ -1,7 +1,7 @@
 import { add, format } from "date-fns";
 import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router";
-import { AppContext, EnumSpacedRepetition } from "../../AppContext/AppContext";
+import { AppContext } from "../../AppContext/AppContext";
 import Dropdown from "../../widgets/Dropdown";
 import Modal from "../../widgets/Modal";
 
@@ -66,7 +66,6 @@ export function KnowSpacedRepetition() {
 
 export const VideoScreen = () => {
   const [selected, setSelected] = useState("English");
-  const [text, setText] = useState("custom===the guy above===");
   useEffect(() => {
     document.title = "What is Spaced Repetition | Never Forget";
   }, []);
@@ -115,7 +114,7 @@ To prevent this we can use space repetition technique. In this
    add(new Date(), { days: 365 }),
    "dd-MMM-yyyy"
  )}). The pattern here was 1-7-30-90-365. There are other famous patterns like 1-3-7-30-90, 1-3-7-15-30-90 etc as well.\
- Like this the information will store in your long term memory, it will become very easy for you to recall and you will Never Forget what's important for you.\n\
+ Like this the information will store in your long term memory, it will become very easy for you to recall and you will Never Forget what's important for you.
 So did you understand what spaced repetition is? It's crucial to use this app correctly.`,
         indent: [
           {

@@ -93,7 +93,7 @@ const Main = () => {
   }, [isAnyNoteActive]);
 
   useEffect(() => {
-    alert("testing 5");
+    alert("testing 6");
   }, []);
 
   return (
@@ -147,7 +147,7 @@ const Main = () => {
                     }}
                     to='/'
                   >
-                    <img style={{ width: "21px" }} src={home} alt='' />
+                    <img style={{ width: "21px" }} src={home} alt='home' />
                     <span>Home</span>
                   </Link>
                   <Link
@@ -164,7 +164,11 @@ const Main = () => {
                     }}
                     to='/all-notes'
                   >
-                    <img style={{ width: "21px" }} src={notes} alt='' />
+                    <img
+                      style={{ width: "21px" }}
+                      src={notes}
+                      alt='all notes'
+                    />
                     <span>All Notes</span>
                   </Link>
                   <Link
@@ -181,7 +185,11 @@ const Main = () => {
                     }}
                     to='/settings'
                   >
-                    <img style={{ width: "21px" }} src={settings} alt='' />
+                    <img
+                      style={{ width: "21px" }}
+                      src={settings}
+                      alt='settings'
+                    />
                     <span>Settings</span>
                   </Link>
                 </div>
@@ -317,7 +325,6 @@ const noNotesNotification = async (isAnyNoteActive: boolean) => {
           tag: "SS-EmptyNoteBox", // a unique ID
           body: "Add notes so you Never Forget what's important to you!", // content of the push notification
           // @ts-ignore
-          // showTrigger: new TimestampTrigger(new Date().getTime() + trigger), // set the time for the push notification
           showTrigger: new TimestampTrigger(new Date().getTime() + trigger), // set the time for the push notification
           badge: logoInBase64,
           icon: logoInBase64,

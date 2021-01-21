@@ -25,7 +25,7 @@ export default function NotFound() {
         height: "100vh",
       }}
     >
-      <img style={{ width: "20%" }} src={icon404} alt='' />
+      <img style={{ width: "20%" }} src={icon404} alt='404' />
       <p>Page "{location.pathname}" Not Found</p>
       <button
         className='app-btn'
