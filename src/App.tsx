@@ -93,7 +93,7 @@ const Main = () => {
   }, [isAnyNoteActive]);
 
   useEffect(() => {
-    alert("testing 3");
+    alert("testing 4");
   }, []);
 
   return (

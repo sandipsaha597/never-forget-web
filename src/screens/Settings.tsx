@@ -54,18 +54,33 @@ export default function Settings() {
         desc="This feature is experimental. It may not work as expected in your device. Usually it works fine with Chrome. And we don't spam."
         onMouseDown={(val: string) => {
           if (val === "On" && notifications !== "On") {
-            Notification.requestPermission().then((permission) => {
-              alert(permission);
+            Notification.requestPermission().then(async (permission) => {
               if (permission === "granted") {
-                new Notification("Notifications are on 👍", {
-                  body:
-                    "If you have revision(s), You'll receive a notification of your revision(s) at 6:00am",
-                  icon: logoInBase64,
-                });
-                alert("noti sent");
-                setAlertMsg("Scheduling notifications. Please wait...");
-                scheduleAllNotifications(setAlertMsg);
-                saveAndUpdate("notifications", setNotifications, "On");
+                try {
+                  const reg = await navigator.serviceWorker.getRegistration();
+                  reg?.showNotification("Notifications are on 👍", {
+                    tag: "SS", // a unique ID
+                    body:
+                      "If you have revision(s), You'll receive a notification of your revision(s) at 6:00am", // content of the push notification
+                    // @ts-ignore
+                    // showTrigger: new TimestampTrigger(new Date().getTime() + trigger), // set the time for the push notification
+                    showTrigger: new TimestampTrigger(
+                      new Date().getTime() + 10
+                    ), // set the time for the push notification
+                    badge: logoInBase64,
+                    icon: logoInBase64,
+                  });
+                  setAlertMsg("Scheduling notifications. Please wait...");
+                  scheduleAllNotifications(setAlertMsg);
+                  saveAndUpdate("notifications", setNotifications, "On");
+                } catch (err) {
+                  alert(
+                    "Failed! Please try again using an updated version of chrome."
+                  );
+                  setAlertMsg(
+                    "Failed! Please try again using an updated version of chrome."
+                  );
+                }
               } else if (permission === "denied") {
                 setAlertMsg("You have blocked notification permission");
                 saveAndUpdate("notifications", setNotifications, "Off");

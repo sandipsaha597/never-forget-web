@@ -48,9 +48,26 @@ export default function AddNote(props: {
         text: "Thanks! And turn on notifications.",
         reply: "You're welcome. Please allow notification permission.",
         executeFunction: () => {
-          Notification.requestPermission().then((permission) => {
+          Notification.requestPermission().then(async (permission) => {
             if (permission === "granted") {
-              localStorage.setItem("notifications", JSON.stringify("On"));
+              try {
+                const reg = await navigator.serviceWorker.getRegistration();
+                reg?.showNotification("Notifications are on 👍", {
+                  tag: "SS", // a unique ID
+                  body:
+                    "If you have revision(s), You'll receive a notification of your revision(s) at 6:00am", // content of the push notification
+                  // @ts-ignore
+                  // showTrigger: new TimestampTrigger(new Date().getTime() + trigger), // set the time for the push notification
+                  showTrigger: new TimestampTrigger(new Date().getTime() + 10), // set the time for the push notification
+                  badge: logoInBase64,
+                  icon: logoInBase64,
+                });
+                localStorage.setItem("notifications", JSON.stringify("On"));
+              } catch (err) {
+                alert(
+                  "Failed! Please try again using an updated version of chrome."
+                );
+              }
             } else {
               localStorage.setItem("notifications", JSON.stringify("Off"));
             }

@@ -176,44 +176,51 @@ export const closeAllNotifications = async () => {
 };
 
 export const scheduleAllNotifications = async (done: any) => {
-  closeAllNotifications();
-  const reg = await navigator.serviceWorker.getRegistration();
-  const storedAllNotes = JSON.parse(localStorage.getItem("allNotes") as any);
-  const structuredAllNotes: any = {};
+  try {
+    closeAllNotifications();
+    const reg = await navigator.serviceWorker.getRegistration();
+    const storedAllNotes = JSON.parse(localStorage.getItem("allNotes") as any);
+    const structuredAllNotes: any = {};
 
-  storedAllNotes.forEach((v: any) => {
-    if (v.deleted) return;
-    v.revisions.forEach((date: any) => {
-      if (structuredAllNotes[date]) {
-        structuredAllNotes[date] =
-          structuredAllNotes[date] + "\n" + "🗒️ " + v.title + " 📖";
-      } else {
-        structuredAllNotes[date] = "🗒️ " + v.title + " 📖";
-      }
-    });
-  });
-
-  for (let i in structuredAllNotes) {
-    const trigger =
-      differenceInSeconds(
-        // add(startOfDay(new Date()), { days: 0, hours: 13, minutes: 11 }),
-        // add(new Date(note.revisions[0]), { hours: 14, minutes: 18 }),
-        add(new Date(i), { hours: 6 }),
-        new Date()
-      ) * 1000;
-    if (Math.sign(trigger) === 1) {
-      reg?.showNotification("Review your notes, so you Never Forget them! 📔", {
-        tag: format(new Date(i), "dd-MM-yyyy"), // a unique ID
-        body: structuredAllNotes[i], // content of the push notification
-        // @ts-ignore
-        showTrigger: new TimestampTrigger(new Date().getTime() + trigger), // set the time for the push notification
-        badge: logoInBase64,
-        icon: logoInBase64,
+    storedAllNotes.forEach((v: any) => {
+      if (v.deleted) return;
+      v.revisions.forEach((date: any) => {
+        if (structuredAllNotes[date]) {
+          structuredAllNotes[date] =
+            structuredAllNotes[date] + "\n" + "🗒️ " + v.title + " 📖";
+        } else {
+          structuredAllNotes[date] = "🗒️ " + v.title + " 📖";
+        }
       });
-    }
-  }
+    });
 
-  done("Done!");
+    for (let i in structuredAllNotes) {
+      const trigger =
+        differenceInSeconds(
+          // add(startOfDay(new Date()), { days: 0, hours: 13, minutes: 11 }),
+          // add(new Date(note.revisions[0]), { hours: 14, minutes: 18 }),
+          add(new Date(i), { hours: 6 }),
+          new Date()
+        ) * 1000;
+      if (Math.sign(trigger) === 1) {
+        reg?.showNotification(
+          "Review your notes, so you Never Forget them! 📔",
+          {
+            tag: format(new Date(i), "dd-MM-yyyy"), // a unique ID
+            body: structuredAllNotes[i], // content of the push notification
+            // @ts-ignore
+            showTrigger: new TimestampTrigger(new Date().getTime() + trigger), // set the time for the push notification
+            badge: logoInBase64,
+            icon: logoInBase64,
+          }
+        );
+      }
+    }
+
+    done("Done!");
+  } catch (err) {
+    done("Please try again using an updated version of chrome");
+  }
 };
 // interfaces
 
