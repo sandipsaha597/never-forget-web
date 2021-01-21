@@ -57,11 +57,12 @@ export default function Settings() {
             Notification.requestPermission().then((permission) => {
               alert(permission);
               if (permission === "granted") {
-                const greeting = new Notification("Notifications are on 👍", {
+                new Notification("Notifications are on 👍", {
                   body:
                     "If you have revision(s), You'll receive a notification of your revision(s) at 6:00am",
                   icon: logoInBase64,
                 });
+                alert("noti sent");
                 setAlertMsg("Scheduling notifications. Please wait...");
                 scheduleAllNotifications(setAlertMsg);
                 saveAndUpdate("notifications", setNotifications, "On");
