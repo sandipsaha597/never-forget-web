@@ -37,7 +37,7 @@ export default function Settings() {
       setNotifications("Off");
     }
   }, []);
-
+  console.log("new");
   return (
     <div className='settings'>
       {/* <Box
@@ -55,6 +55,7 @@ export default function Settings() {
         onMouseDown={(val: string) => {
           if (val === "On" && notifications !== "On") {
             Notification.requestPermission().then((permission) => {
+              alert(permission);
               if (permission === "granted") {
                 const greeting = new Notification("Notifications are on 👍", {
                   body:
