@@ -7,6 +7,7 @@ import Modal from "../widgets/Modal";
 import done from "../assets/icons/done.svg";
 import leftArrow from "../assets/icons/left-arrow-white.svg";
 import { logoInBase64, schedulePushNotification } from "../util/util";
+import { useLocation } from "react-router";
 
 export default function AddNote(props: {
   editNoteNumber: number;
@@ -64,6 +65,7 @@ export default function AddNote(props: {
                 });
                 localStorage.setItem("notifications", JSON.stringify("On"));
               } catch (err) {
+                console.log(err);
                 alert(
                   "Failed! Please try again using an updated version of chrome."
                 );
@@ -191,9 +193,7 @@ export default function AddNote(props: {
       setDesc("");
     }, 200);
   };
-  // Notifications.getAllScheduledNotificationsAsync().then((v) => console.log(v));
 
-  // Notifications.cancelAllScheduledNotificationsAsync()
   const setItem = (toSet: any, itemName: string) => {
     const value = localStorage.getItem(itemName);
     if (value !== "false") {

@@ -93,7 +93,7 @@ const Main = () => {
   }, [isAnyNoteActive]);
 
   useEffect(() => {
-    alert("testing 4");
+    alert("testing 5");
   }, []);
 
   return (
@@ -290,7 +290,7 @@ export const LogoAndVersion = () => {
 // fontFamily: "staatliches-regular",
 
 const noNotesNotification = async (isAnyNoteActive: boolean) => {
-  if (JSON.parse(localStorage.getItem("notifications") as any) !== "On") {
+  if (JSON.parse(localStorage.getItem("notifications") || "") !== "On") {
     return;
   }
   const reg = await navigator.serviceWorker.getRegistration();

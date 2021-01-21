@@ -194,26 +194,6 @@ export default function AllNotes(props: {
     }
   }, [searchText]);
 
-  useEffect(() => {
-    // if (Notification.permission === "granted") {
-    //   // alert("we have permission");
-    //   const notification = new Notification("permission granted", {
-    //     body: "timestamp",
-    //     icon: "../assets/NFicon2.png",
-    //     // tag: "testing",
-    //     // timestamp: Date.now() + 60000 * 2,
-    //   });
-    // } else if (Notification.permission !== "denied") {
-    //   Notification.requestPermission().then((permission) => {
-    //     if (permission === "granted") {
-    //       const notification = new Notification("permission granted", {
-    //         body: "this is body",
-    //         icon: require("../assets/NFicon2.png"),
-    //       });
-    //     }
-    //   });
-    // }
-  }, []);
   return (
     <>
       {(isAnyNoteActive && allNotes.length !== 0) ||

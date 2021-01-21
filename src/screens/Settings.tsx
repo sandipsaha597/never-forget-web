@@ -37,7 +37,6 @@ export default function Settings() {
       setNotifications("Off");
     }
   }, []);
-  console.log("new");
   return (
     <div className='settings'>
       {/* <Box
@@ -64,9 +63,7 @@ export default function Settings() {
                       "If you have revision(s), You'll receive a notification of your revision(s) at 6:00am", // content of the push notification
                     // @ts-ignore
                     // showTrigger: new TimestampTrigger(new Date().getTime() + trigger), // set the time for the push notification
-                    showTrigger: new TimestampTrigger(
-                      new Date().getTime() + 10
-                    ), // set the time for the push notification
+                    showTrigger: new TimestampTrigger(new Date().getTime()), // set the time for the push notification
                     badge: logoInBase64,
                     icon: logoInBase64,
                   });

@@ -5,8 +5,9 @@ import { add, differenceInSeconds, format, startOfDay } from "date-fns/esm";
 import { v4 as uuidv4 } from "uuid";
 import done from "../assets/icons/done.svg";
 import leftArrow from "../assets/icons/left-arrow-white.svg";
-import { schedulePushNotification } from "../util/util";
+import { logoInBase64, schedulePushNotification } from "../util/util";
 import Modal from "../widgets/Modal";
+import { useLocation } from "react-router";
 
 export default function AddNoteMobile(props: {
   editNoteNumber: number;
@@ -22,6 +23,7 @@ export default function AddNoteMobile(props: {
     addNoteActive,
     setAddNoteActive,
   } = props;
+  const location = useLocation();
   const [title, setTitle] = useState("");
   const [desc, setDesc] = useState("");
   const pattern = useRef<number[]>([1, 7, 30, 90, 365]).current;
@@ -53,9 +55,27 @@ export default function AddNoteMobile(props: {
         text: "Thanks! And turn on notifications.",
         reply: "You're welcome. Please allow notification permission.",
         executeFunction: () => {
-          Notification.requestPermission().then((permission) => {
+          Notification.requestPermission().then(async (permission) => {
             if (permission === "granted") {
-              localStorage.setItem("notifications", JSON.stringify("On"));
+              try {
+                const reg = await navigator.serviceWorker.getRegistration();
+                reg?.showNotification("Notifications are on 👍", {
+                  tag: "SS", // a unique ID
+                  body:
+                    "If you have revision(s), You'll receive a notification of your revision(s) at 6:00am", // content of the push notification
+                  // @ts-ignore
+                  // showTrigger: new TimestampTrigger(new Date().getTime() + trigger), // set the time for the push notification
+                  showTrigger: new TimestampTrigger(new Date().getTime() + 10), // set the time for the push notification
+                  badge: logoInBase64,
+                  icon: logoInBase64,
+                });
+                localStorage.setItem("notifications", JSON.stringify("On"));
+              } catch (err) {
+                console.log(err);
+                alert(
+                  "Failed! Please try again using an updated version of chrome."
+                );
+              }
             } else {
               localStorage.setItem("notifications", JSON.stringify("Off"));
             }
@@ -79,7 +99,11 @@ export default function AddNoteMobile(props: {
   ];
   useEffect(() => {
     setItem(setFirstNote, "firstNote");
-    if (!isAnyNoteActive && isAnyNoteActive !== null) {
+    if (
+      !isAnyNoteActive &&
+      isAnyNoteActive !== null &&
+      (location.pathname === "/" || location.pathname === "/all-notes")
+    ) {
       setTimeout(() => {
         setAddNoteActive(true);
       }, 1000);
@@ -158,9 +182,7 @@ export default function AddNoteMobile(props: {
       setDesc("");
     }, 200);
   };
-  // Notifications.getAllScheduledNotificationsAsync().then((v) => console.log(v));
 
-  // Notifications.cancelAllScheduledNotificationsAsync()
   const setItem = (toSet: any, itemName: string) => {
     const value = localStorage.getItem(itemName);
     if (value !== "false") {

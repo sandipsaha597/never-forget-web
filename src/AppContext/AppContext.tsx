@@ -179,7 +179,7 @@ export const scheduleAllNotifications = async (done: any) => {
   try {
     closeAllNotifications();
     const reg = await navigator.serviceWorker.getRegistration();
-    const storedAllNotes = JSON.parse(localStorage.getItem("allNotes") as any);
+    const storedAllNotes = JSON.parse(localStorage.getItem("allNotes") || "[]");
     const structuredAllNotes: any = {};
 
     storedAllNotes.forEach((v: any) => {
@@ -219,6 +219,7 @@ export const scheduleAllNotifications = async (done: any) => {
 
     done("Done!");
   } catch (err) {
+    console.log(err);
     done("Please try again using an updated version of chrome");
   }
 };

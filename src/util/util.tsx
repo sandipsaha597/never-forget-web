@@ -22,7 +22,7 @@ export async function schedulePushNotification(
   type: string | boolean,
   title: string
 ) {
-  if (JSON.parse(localStorage.getItem("notifications") as any) !== "On") {
+  if (JSON.parse(localStorage.getItem("notifications") || '') !== "On") {
     return;
   }
   // for (let i = note.revisionNumber + 1; i < note.revisionNumber + 2; i++) {
