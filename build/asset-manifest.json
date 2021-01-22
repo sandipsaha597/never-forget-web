@@ -1,8 +1,8 @@
 {
   "files": {
     "main.css": "/static/css/main.8e5c6640.chunk.css",
-    "main.js": "/static/js/main.5590ed93.chunk.js",
-    "main.js.map": "/static/js/main.5590ed93.chunk.js.map",
+    "main.js": "/static/js/main.013f7aee.chunk.js",
+    "main.js.map": "/static/js/main.013f7aee.chunk.js.map",
     "runtime-main.js": "/static/js/runtime-main.3a9393a1.js",
     "runtime-main.js.map": "/static/js/runtime-main.3a9393a1.js.map",
     "static/js/2.d189f2d6.chunk.js": "/static/js/2.d189f2d6.chunk.js",
@@ -21,6 +21,7 @@
     "static/media/done.2f4dfea7.svg": "/static/media/done.2f4dfea7.svg",
     "static/media/draw-check-mark.76247fa5.svg": "/static/media/draw-check-mark.76247fa5.svg",
     "static/media/error-404.b3b79cfa.svg": "/static/media/error-404.b3b79cfa.svg",
+    "static/media/facebook.3f7115f9.svg": "/static/media/facebook.3f7115f9.svg",
     "static/media/fire-cracker.c46383b8.svg": "/static/media/fire-cracker.c46383b8.svg",
     "static/media/fireworks.c4076e84.svg": "/static/media/fireworks.c4076e84.svg",
     "static/media/house.f6fe9c3f.svg": "/static/media/house.f6fe9c3f.svg",
@@ -43,6 +44,6 @@
     "static/js/runtime-main.3a9393a1.js",
     "static/js/2.d189f2d6.chunk.js",
     "static/css/main.8e5c6640.chunk.css",
-    "static/js/main.5590ed93.chunk.js"
+    "static/js/main.013f7aee.chunk.js"
   ]
 }
