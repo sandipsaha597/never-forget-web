@@ -135,7 +135,10 @@ export default function Settings() {
         }}
       />
       <div style={{ display: "flex", alignItems: "center" }}>
-        <a href='https://www.facebook.com/www.neverforgetanything/'>
+        <a
+          href='https://www.facebook.com/www.neverforgetanything/'
+          target='_blank'
+        >
           <img
             style={{ width: 30, marginLeft: 10 }}
             src={fbLogo}

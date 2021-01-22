@@ -202,8 +202,6 @@ export const scheduleAllNotifications = async (done: any) => {
       // });
     });
 
-    console.log(structuredAllNotes);
-
     for (let i in structuredAllNotes) {
       const trigger =
         differenceInSeconds(
