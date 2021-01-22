@@ -181,17 +181,28 @@ export const scheduleAllNotifications = async (done: any) => {
     const storedAllNotes = JSON.parse(localStorage.getItem("allNotes") || "[]");
     const structuredAllNotes: any = {};
 
-    storedAllNotes.forEach((v: any) => {
-      if (v.deleted) return;
-      v.revisions.forEach((date: any) => {
+    storedAllNotes.forEach((note: any) => {
+      if (note.deleted) return;
+      for (let i = note.revisionNumber + 1; i < note.revisions.length; i++) {
+        const date = note.revisions[i];
         if (structuredAllNotes[date]) {
           structuredAllNotes[date] =
-            structuredAllNotes[date] + "\n" + "🗒️ " + v.title + " 📖";
+            structuredAllNotes[date] + "\n" + "🗒️ " + note.title + " 📖";
         } else {
-          structuredAllNotes[date] = "🗒️ " + v.title + " 📖";
+          structuredAllNotes[date] = "🗒️ " + note.title + " 📖";
         }
-      });
+      }
+      // v.revisions.forEach((date: any) => {
+      //   if (structuredAllNotes[date]) {
+      //     structuredAllNotes[date] =
+      //       structuredAllNotes[date] + "\n" + "🗒️ " + v.title + " 📖";
+      //   } else {
+      //     structuredAllNotes[date] = "🗒️ " + v.title + " 📖";
+      //   }
+      // });
     });
+
+    console.log(structuredAllNotes);
 
     for (let i in structuredAllNotes) {
       const trigger =

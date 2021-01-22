@@ -92,10 +92,6 @@ const Main = () => {
     }
   }, [isAnyNoteActive]);
 
-  useEffect(() => {
-    alert("testing 6");
-  }, []);
-
   return (
     <>
       <Routes>

@@ -9,5 +9,7 @@
 <div>Icons made by <a href="https://www.flaticon.com/authors/smashicons" title="Smashicons">Smashicons</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>
 <div>Icons made by <a href="https://www.flaticon.com/authors/monkik" title="monkik">monkik</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>
 <div>Icons made by <a href="https://www.flaticon.com/authors/bqlqn" title="bqlqn">bqlqn</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>
+<div>Icons made by <a href="https://www.flaticon.com/authors/pixel-perfect" title="Pixel perfect">Pixel perfect</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>
+
 
 AiaSwBQkkBtj0ovU8mwWKLhrbkZBR7WrdZwyN6j9Xkq4ihStpSSiSY4NLuI2xr/jn056WgMk2l6eXxCf2K5duA0AAABueyJvcmlnaW4iOiJodHRwczovL25ldmVyLWZvcmdldC1hLXRoaW5nLm5ldGxpZnkuYXBwOjQ0MyIsImZlYXR1cmUiOiJOb3RpZmljYXRpb25UcmlnZ2VycyIsImV4cGlyeSI6MTYxNDEyNDc5OX0=

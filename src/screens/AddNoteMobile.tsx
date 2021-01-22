@@ -122,12 +122,12 @@ export default function AddNoteMobile(props: {
     }
   }, [editNoteNumber]);
   useEffect(() => {
-    if (addNoteActive) {
+    if (addNoteActive && !firstNote) {
       titleInputRef?.current.focus();
     } else {
       titleInputRef?.current.blur();
     }
-  }, [addNoteActive]);
+  }, [addNoteActive, firstNote]);
 
   useEffect(() => {
     //esc button

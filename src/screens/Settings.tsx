@@ -9,6 +9,7 @@ import Dropdown from "../widgets/Dropdown";
 import { useNavigate } from "react-router";
 import { LogoAndVersion } from "../App";
 import { logoInBase64 } from "../util/util";
+import fbLogo from "../assets/icons/facebook.svg";
 
 export default function Settings() {
   // const [shared, setShared] = useState("none");
@@ -133,6 +134,18 @@ export default function Settings() {
           navigate("/credits");
         }}
       />
+      <div style={{ display: "flex", alignItems: "center" }}>
+        <a href='https://www.facebook.com/www.neverforgetanything/'>
+          <img
+            style={{ width: 30, marginLeft: 10 }}
+            src={fbLogo}
+            alt='Facebook page'
+          />
+        </a>
+        <span style={{ marginLeft: 10, marginBottom: 5 }}>
+          neverforgetanything
+        </span>
+      </div>
       {window.screen.width < 768 && (
         <div style={{ width: "100vw" }}>
           <LogoAndVersion />
@@ -227,7 +240,7 @@ const Box = (props: iBox) => {
                 textAlign: "left",
               }}
             >
-              {desc}
+              {desc}kk
             </p>
           )}
           {comingSoon && (
@@ -279,7 +292,7 @@ const Box = (props: iBox) => {
                 textAlign: "left",
               }}
             >
-              {desc}
+              {desc}ll
             </p>
           )}
           {comingSoon && (
@@ -519,6 +532,19 @@ export const Credits = () => {
         Icons made by{" "}
         <a href='https://www.flaticon.com/authors/bqlqn' title='bqlqn'>
           bqlqn
+        </a>{" "}
+        from{" "}
+        <a href='https://www.flaticon.com/' title='Flaticon'>
+          www.flaticon.com
+        </a>
+      </div>
+      <div>
+        Icons made by{" "}
+        <a
+          href='https://www.flaticon.com/authors/pixel-perfect'
+          title='Pixel perfect'
+        >
+          Pixel perfect
         </a>{" "}
         from{" "}
         <a href='https://www.flaticon.com/' title='Flaticon'>
