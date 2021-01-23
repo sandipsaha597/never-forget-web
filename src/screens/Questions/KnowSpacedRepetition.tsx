@@ -1,15 +1,12 @@
 import { add, format } from "date-fns";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
-import { AppContext } from "../../AppContext/AppContext";
+import { constants } from "../../util/util";
 import Dropdown from "../../widgets/Dropdown";
 import Modal from "../../widgets/Modal";
 
-export function KnowSpacedRepetition() {
-  const {
-    constants: { mainColor },
-    actions: { setKnowSpacedRepetition },
-  } = useContext<any>(AppContext);
+export function KnowSpacedRepetition(props: { setKnowSpacedRepetition: any }) {
+  const { setKnowSpacedRepetition } = props;
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -32,14 +29,14 @@ export function KnowSpacedRepetition() {
           style={{
             textDecoration: "none",
             color: "#fff",
-            background: mainColor,
+            background: constants.mainColor,
             padding: "10px 15px",
             border: "none",
             fontSize: "15px",
             margin: "10px",
             cursor: "pointer",
           }}
-          onMouseDown={() => navigate("/what-is-spaced-repetition")}
+          onClick={() => navigate("/what-is-spaced-repetition")}
         >
           No, what is it?
         </button>
@@ -48,14 +45,14 @@ export function KnowSpacedRepetition() {
           style={{
             textDecoration: "none",
             color: "#fff",
-            background: mainColor,
+            background: constants.mainColor,
             padding: "10px 15px",
             border: "none",
             fontSize: "15px",
             margin: "10px",
             cursor: "pointer",
           }}
-          onMouseDown={() => setKnowSpacedRepetition("Yes")}
+          onClick={() => setKnowSpacedRepetition("Yes")}
         >
           Yes
         </button>
@@ -64,14 +61,12 @@ export function KnowSpacedRepetition() {
   );
 }
 
-export const VideoScreen = () => {
+export const VideoScreen = (props: { setKnowSpacedRepetition: any }) => {
+  const { setKnowSpacedRepetition } = props;
   const [selected, setSelected] = useState("English");
   useEffect(() => {
     document.title = "What is Spaced Repetition | Never Forget";
   }, []);
-  const {
-    actions: { setKnowSpacedRepetition },
-  } = useContext<any>(AppContext);
 
   const navigate = useNavigate();
 

@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { constants } from "../util/util";
 
 export default function Modal(props: {
   text: string;
@@ -54,7 +55,6 @@ export default function Modal(props: {
         textAlign: center ? "center" : "left",
         borderRadius: center ? 4 : 0,
         opacity: 1,
-        // margin: 10,
         width: center ? "auto" : "100%",
         overflowY: "scroll",
         height: scroll
@@ -62,7 +62,6 @@ export default function Modal(props: {
             ? "calc(100% - 80px)"
             : "80vh"
           : "auto",
-        // flex: 1,
         justifyContent: "flex-end",
         backgroundColor: center ? "transparent" : "#e0e0e0",
         padding: 10,
@@ -153,14 +152,13 @@ export default function Modal(props: {
             >
               {v.map((j: any, i2: number) => (
                 <div
-                  // activeOpacity={isReply && i1 === chat.length - 1 ? 0.7 : 1}
                   key={j.id}
                   onMouseDown={(e) =>
                     isReply && i1 === chat.length - 1 ? reply(j, i1, i2) : {}
                   }
                   className={isReply && i1 === chat.length - 1 ? "app-btn" : ""}
                   style={{
-                    backgroundColor: isReply ? "#3178c6" : "#2b2b2b",
+                    backgroundColor: isReply ? constants.mainColor : "#2b2b2b",
                     padding: isReply ? 10 : "12px 10px",
                     marginTop: 10,
                     cursor:

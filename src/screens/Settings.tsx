@@ -12,7 +12,6 @@ import { logoInBase64 } from "../util/util";
 import fbLogo from "../assets/icons/facebook.svg";
 
 export default function Settings() {
-  // const [shared, setShared] = useState("none");
   const [notifications, setNotifications] = useState<"On" | "Off">("Off");
   const [alertMsg, setAlertMsg] = useState("");
 
@@ -75,7 +74,6 @@ export default function Settings() {
         boxInfo={{ notifications: notifications, alertMsg: alertMsg }}
         highlight
       />
-
       <Box
         heading='Backup'
         desc='Backup your data on google drive or in downloadable CSV or both. So you can switch device and still have your notes and data.'
@@ -101,7 +99,6 @@ export default function Settings() {
       <Box
         heading='What is Spaced Repetition?'
         onMouseDown={(val: string) => {
-          // setKnowSpacedRepetition(EnumSpacedRepetition.No);
           navigate("/what-is-spaced-repetition");
         }}
       />
@@ -110,8 +107,6 @@ export default function Settings() {
         heading='Contact Us'
         desc='sandipsaha564@gmail.com'
         onMouseDown={(val: string) => {
-          // Linking.openURL("mailto:sandipsaha564@gmail.com")
-          // window.location.href = "mailto:mail@example.org"
           if (window.screen.width < 992) {
             window.open("mailto:sandipsaha564@gmail.com", "_blank");
           } else {
@@ -134,6 +129,7 @@ export default function Settings() {
           navigate("/credits");
         }}
       />
+
       <div style={{ display: "flex", alignItems: "center" }}>
         <a
           href='https://www.facebook.com/www.neverforgetanything/'
@@ -557,49 +553,6 @@ export const Credits = () => {
     </div>
   );
 };
-
-// const rescheduleNotifications = (setRescheduleNotificationsProgress: any) => {
-//   Notifications.getAllScheduledNotificationsAsync().then((allNotifications) => {
-//     const allNotificationsLength = allNotifications.length;
-//     allNotifications.forEach(async (v, i) => {
-//       if (!v.identifier.startsWith("SS")) {
-//         const body = v.content.body;
-//         const revisionDate = () => {
-//           let dateArray = v.identifier.split("-");
-//           return new Date(
-//             parseInt(dateArray[2]),
-//             parseInt(dateArray[1]) - 1,
-//             parseInt(dateArray[0])
-//           );
-//         };
-//         const trigger = differenceInSeconds(
-//           // add(startOfDay(new Date()), { days: 0, hours: 13, minutes: 11 }),
-//           // add(new Date(note.revisions[0]), { hours: 14, minutes: 18 }),
-//           add(revisionDate(), { hours: 6 }),
-//           new Date()
-//         );
-//         await Notifications.scheduleNotificationAsync({
-//           content: {
-//             title: "Review your notes, so you Never Forget them! 📔",
-//             body: body ?? "Something went wrong",
-//             data: { data: "goes here" },
-//           },
-//           identifier: format(revisionDate(), "dd-MM-yyyy"),
-//           trigger: { seconds: trigger },
-//         });
-
-//         if (i + 1 >= allNotificationsLength) {
-//           setRescheduleNotificationsProgress(false);
-//         } else {
-//           setRescheduleNotificationsProgress({
-//             index: i + 1,
-//             length: allNotificationsLength,
-//           });
-//         }
-//       }
-//     });
-//   });
-// };
 
 // interfaces
 

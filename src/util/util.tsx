@@ -1,5 +1,9 @@
 import { add, differenceInSeconds, format } from "date-fns";
 
+export const constants = {
+  mainColor: "#3178c6",
+};
+
 export const isAnyNoteActiveFunc = (allNotes: any, setIsAnyNoteActive: any) => {
   const tempCheck = allNotes.every((v: any) => {
     return v.deleted;
@@ -25,7 +29,6 @@ export async function schedulePushNotification(
   if (JSON.parse(localStorage.getItem("notifications") || "") !== "On") {
     return;
   }
-  // for (let i = note.revisionNumber + 1; i < note.revisionNumber + 2; i++) {
   const reg = await navigator.serviceWorker.getRegistration();
   const allNotifications = await reg?.getNotifications({
     // @ts-ignore
@@ -83,19 +86,14 @@ export async function schedulePushNotification(
     const trigger =
       body === ""
         ? "close"
-        : differenceInSeconds(
-            // add(startOfDay(new Date()), { days: 0, hours: 13, minutes: 11 }),
-            // add(new Date(note.revisions[0]), { hours: 14, minutes: 18 }),
-            add(revisionDate, { hours: 6 }),
-            new Date()
-          ) * 1000;
+        : differenceInSeconds(add(revisionDate, { hours: 6 }), new Date()) *
+          1000;
 
     if (trigger === "close") {
       notificationObj?.close();
     } else if (Math.sign(trigger) !== -1) {
       notificationObj?.close();
       if (Notification.permission !== "granted") {
-        // alert("you need to allow push notifications");
       } else {
         reg?.showNotification(
           "Review your notes, so you Never Forget them! 📔",

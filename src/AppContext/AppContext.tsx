@@ -14,15 +14,8 @@ export enum EnumSpacedRepetition {
 }
 
 export function AppProvider(props: any) {
-  const [
-    knowSpacedRepetition,
-    setKnowSpacedRepetition,
-  ] = useState<EnumSpacedRepetition>(EnumSpacedRepetition.No);
   const [allNotes, setAllNotes] = useState<IAllNotes[]>([]);
   const [isAnyNoteActive, setIsAnyNoteActive] = useState<boolean | null>(null);
-  const [isRecycleBinEmpty, setIsRecycleBinEmpty] = useState<boolean | null>(
-    null
-  );
 
   const [subs, setSubs] = useState<{ id: string; title: string }[]>([
     {
@@ -47,19 +40,14 @@ export function AppProvider(props: any) {
     },
   ]);
 
-  // refs
-
   const contextValue = {
     states: {
-      knowSpacedRepetition,
       allNotes,
       subs,
       isAnyNoteActive,
-      isRecycleBinEmpty,
     },
     constants: {
       rewardMsgTimeoutTime: 2000,
-      mainColor: "#3178c6",
       externalLinkColor: "#296ab3",
     },
     actions: {
@@ -77,15 +65,12 @@ export function AppProvider(props: any) {
       setSubs(val: { id: string; title: string }[]) {
         saveAndUpdate("subs", setSubs, val);
       },
-      setKnowSpacedRepetition(val: EnumSpacedRepetition) {
-        saveAndUpdate("knowSpacedRepetition", setKnowSpacedRepetition, val);
-      },
       setIsAnyNoteActive(val: boolean) {
         saveAndUpdate("isAnyNoteActive", setIsAnyNoteActive, val);
       },
-      setIsRecycleBinEmpty(val: boolean) {
-        saveAndUpdate("isRecycleBinEmpty", setIsRecycleBinEmpty, val);
-      },
+      // setIsRecycleBinEmpty(val: boolean) {
+      //   saveAndUpdate("isRecycleBinEmpty", setIsRecycleBinEmpty, val);
+      // },
     },
   };
 
@@ -111,27 +96,25 @@ export function AppProvider(props: any) {
       }
     }
 
-    if (isRecycleBinEmpty === null) {
-      const storedIsRecycleBinEmpty = localStorage.getItem("isRecycleBinEmpty");
-      if (
-        storedIsRecycleBinEmpty === "false" ||
-        storedIsRecycleBinEmpty === "true"
-      ) {
-        setIsRecycleBinEmpty(JSON.parse(storedIsRecycleBinEmpty));
-      } else {
-        isRecycleBinEmptyFunc(
-          allNotes,
-          contextValue.actions.setIsRecycleBinEmpty
-        );
-      }
-    }
+    // if (isRecycleBinEmpty === null) {
+    //   const storedIsRecycleBinEmpty = localStorage.getItem("isRecycleBinEmpty");
+    //   if (
+    //     storedIsRecycleBinEmpty === "false" ||
+    //     storedIsRecycleBinEmpty === "true"
+    //   ) {
+    //     setIsRecycleBinEmpty(JSON.parse(storedIsRecycleBinEmpty));
+    //   } else {
+    //     isRecycleBinEmptyFunc(
+    //       allNotes,
+    //       contextValue.actions.setIsRecycleBinEmpty
+    //     );
+    //   }
+    // }
   };
   useEffect(() => {
     setItem(setAllNotes, "allNotes");
     retrieveAllNotesDeleteAndRecycleBinStatus();
-    setItem(setKnowSpacedRepetition, "knowSpacedRepetition");
     setItem(setSubs, "subs");
-    // setItem(setNotifications, "notifications");
   }, []);
 
   return (
@@ -150,7 +133,6 @@ export const saveAndUpdate = (save: string, update: any, value: any) => {
     console.log("err", err);
   }
 };
-
 export const setItem = (toSet: any, itemName: string) => {
   const value = localStorage.getItem(itemName);
   if (value) {
@@ -204,12 +186,7 @@ export const scheduleAllNotifications = async (done: any) => {
 
     for (let i in structuredAllNotes) {
       const trigger =
-        differenceInSeconds(
-          // add(startOfDay(new Date()), { days: 0, hours: 13, minutes: 11 }),
-          // add(new Date(note.revisions[0]), { hours: 14, minutes: 18 }),
-          add(new Date(i), { hours: 6 }),
-          new Date()
-        ) * 1000;
+        differenceInSeconds(add(new Date(i), { hours: 6 }), new Date()) * 1000;
       if (Math.sign(trigger) === 1) {
         reg?.showNotification(
           "Review your notes, so you Never Forget them! 📔",

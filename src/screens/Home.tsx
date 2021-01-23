@@ -19,6 +19,7 @@ import rightArrow from "../assets/icons/right-arrow.svg";
 import drawCheckMark from "../assets/icons/draw-check-mark.svg";
 import { NoNotes, placeholderArray } from "./AllNotes";
 import { Masonry } from "masonic";
+import { constants } from "../util/util";
 
 const congratsIcons = [fireCracker, fireworks, clapping, trophy];
 
@@ -205,7 +206,11 @@ export default function Home() {
           )}
 
           {rewardMsgShow && (
-            <Modal text={currentRewardMsg.current} center color='#3178c6' />
+            <Modal
+              text={currentRewardMsg.current}
+              center
+              color={constants.mainColor}
+            />
           )}
         </div>
       ) : (

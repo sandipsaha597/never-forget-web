@@ -6,6 +6,8 @@ import {
   AppProvider,
   AppContext,
   EnumSpacedRepetition,
+  setItem,
+  saveAndUpdate,
 } from "./AppContext/AppContext";
 import "./App.css";
 import {
@@ -22,27 +24,10 @@ import notes from "./assets/icons/notes.svg";
 import settings from "./assets/icons/settings.svg";
 import Settings, { PrivacyPolicy, Credits } from "./screens/Settings";
 import plus from "../src/assets/icons/plus.svg";
-
-// import Home from "./screens/Home";
-// import AllNotes from "./screens/AllNotes";
-// // import {
-// //   AppContext,
-// //   AppProvider,
-// //   EnumSpacedRepetition,
-// // } from "./AppContext/AppContext";
-// import {
-//   KnowSpacedRepetition,
-//   VideoScreen,
-// } from "./screens/Questions/KnowSpacedRepetition";
-// import AddNote from "./screens/AddNote";
-// import Modal from "./widgets/Modal";
-// import Settings from "./screens/Settings";
 import { add, differenceInSeconds, startOfDay } from "date-fns";
-import { logoInBase64 } from "./util/util";
+import { constants, logoInBase64 } from "./util/util";
 import NotFound from "./screens/NotFound";
-// import { AppProvider, AppContext, EnumSpacedRepetition } from "./AppContext/AppContext";
 export default function App() {
-  // if (fontLoaded) {
   return (
     <AppProvider>
       <BrowserRouter>
@@ -50,17 +35,6 @@ export default function App() {
       </BrowserRouter>
     </AppProvider>
   );
-  // } else {
-  //   return (
-  //     <View>
-  //       <AppLoading
-  //         startAsync={getFonts}
-  //         onFinish={() => setFontLoaded(true)}
-  //       />
-  //       {/* <Text>hello world!</Text> */}
-  //     </View>
-  //   );
-  // }
 }
 
 export const rewardMsgs = [
@@ -81,8 +55,12 @@ const Main = () => {
   const [rewardMsgShow, setRewardMsgShow] = useState(false);
   const [editNoteNumber, setEditNoteNumber] = useState(-1);
   const [addNoteActive, setAddNoteActive] = useState<boolean>(false);
+  const [
+    knowSpacedRepetition,
+    setKnowSpacedRepetition,
+  ] = useState<EnumSpacedRepetition>(EnumSpacedRepetition.No);
   const {
-    states: { knowSpacedRepetition, isAnyNoteActive },
+    states: { isAnyNoteActive },
     constants: { rewardMsgTimeoutTime },
   } = useContext<any>(AppContext);
   const location = useLocation();
@@ -91,35 +69,50 @@ const Main = () => {
       noNotesNotification(isAnyNoteActive);
     }
   }, [isAnyNoteActive]);
-
+  useEffect(() => {
+    setItem(setKnowSpacedRepetition, "knowSpacedRepetition");
+  }, []);
   return (
     <>
       <Routes>
-        <Route path='/what-is-spaced-repetition' element={<VideoScreen />} />
-        {/* <Route path='/*' element={<NotFound />} /> */}
+        <Route
+          path='/what-is-spaced-repetition'
+          element={
+            <VideoScreen
+              setKnowSpacedRepetition={(val: any) =>
+                saveAndUpdate(
+                  "knowSpacedRepetition",
+                  setKnowSpacedRepetition,
+                  val
+                )
+              }
+            />
+          }
+        />
       </Routes>
       {knowSpacedRepetition === EnumSpacedRepetition.No ? (
         <div>
           <Routes>
-            <Route path='/' element={<KnowSpacedRepetition />} />
+            <Route
+              path='/'
+              element={
+                <KnowSpacedRepetition
+                  setKnowSpacedRepetition={(val: any) =>
+                    saveAndUpdate(
+                      "knowSpacedRepetition",
+                      setKnowSpacedRepetition,
+                      val
+                    )
+                  }
+                />
+              }
+            />
             {location.pathname !== "/what-is-spaced-repetition" && (
               <Route path='/*' element={<NotFound />} />
             )}
           </Routes>
         </div>
       ) : (
-        // <Stack.Navigator>
-        //   <Stack.Screen
-        //     name='KnowSpacedRepetition'
-        //     component={KnowSpacedRepetition}
-        //     options={{ title: "", headerShown: false }}
-        //   />
-        //   <Stack.Screen
-        //     name='VideoScreen'
-        //     component={VideoScreen}
-        //     options={{ title: "" }}
-        //   />
-        // </Stack.Navigator>
         <div className='container'>
           {location.pathname !== "/what-is-spaced-repetition" && (
             <div
@@ -253,7 +246,7 @@ const Main = () => {
             <Modal
               text={rewardMsgs[Math.floor(Math.random() * rewardMsgs.length)]}
               center
-              color='#3178c6'
+              color={constants.mainColor}
             />
           )}
         </div>
@@ -291,7 +284,6 @@ export const LogoAndVersion = () => {
     </div>
   );
 };
-// fontFamily: "staatliches-regular",
 
 const noNotesNotification = async (isAnyNoteActive: boolean) => {
   if (JSON.parse(localStorage.getItem("notifications") || "") !== "On") {
@@ -315,7 +307,6 @@ const noNotesNotification = async (isAnyNoteActive: boolean) => {
           new Date()
         ) * 1000;
       if (Notification.permission !== "granted") {
-        // alert("you need to allow push notifications");
       } else {
         reg?.showNotification("Your Note box is empty 📁", {
           tag: "SS-EmptyNoteBox", // a unique ID
