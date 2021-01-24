@@ -1,4 +1,4 @@
-const cacheName = 'v1.0.0'
+const cacheName = 'v1.0.1'
 
 self.addEventListener('activate', (e) => {
   //remove unwanted caches

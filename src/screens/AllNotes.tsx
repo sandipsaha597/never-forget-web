@@ -329,8 +329,6 @@ export default function AllNotes(props: {
                         src={leftArrow}
                         alt='close'
                       />
-
-                      {/* <AntDesign name='arrowleft' size={24} color='black' /> */}
                     </button>
                     <input
                       ref={searchInputRef}

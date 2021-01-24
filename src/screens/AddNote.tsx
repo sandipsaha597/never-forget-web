@@ -26,7 +26,7 @@ export default function AddNote(props: {
 
   const {
     states: { subs, allNotes, isAnyNoteActive },
-    actions: { setAllNotes, setIsAnyNoteActive },
+    actions: { setSubs, setAllNotes, setIsAnyNoteActive },
   } = useContext<any>(AppContext);
   const [selected, setSelected] = useState(subs[0].title);
   const titleInputRef = useRef<any>();
@@ -301,8 +301,8 @@ export default function AddNote(props: {
             options={subs}
             selected={selected}
             setSelected={setSelected}
-            addInput
-            deleteAble
+            onAdd={setSubs}
+            onDelete={setSubs}
           />
           <div
             style={{

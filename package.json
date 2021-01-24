@@ -1,6 +1,6 @@
 {
   "name": "never-forget",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "private": true,
   "dependencies": {
     "@testing-library/jest-dom": "^5.11.4",
@@ -9,6 +9,7 @@
     "@types/jest": "^26.0.15",
     "@types/node": "^12.0.0",
     "@types/react": "^16.9.53",
+    "axios": "^0.21.1",
     "date-fns": "^2.16.1",
     "history": "^5.0.0",
     "masonic": "^3.4.0",

@@ -1,10 +1,6 @@
 import { add, differenceInSeconds, format } from "date-fns";
 import React, { useState, createContext, useEffect } from "react";
-import {
-  isAnyNoteActiveFunc,
-  isRecycleBinEmptyFunc,
-  logoInBase64,
-} from "../util/util";
+import { isAnyNoteActiveFunc, logoInBase64 } from "../util/util";
 
 export const AppContext = createContext<any>({});
 
@@ -13,7 +9,7 @@ export enum EnumSpacedRepetition {
   Yes = "yes",
 }
 
-export function AppProvider(props: any) {
+export default function AppProvider(props: any) {
   const [allNotes, setAllNotes] = useState<IAllNotes[]>([]);
   const [isAnyNoteActive, setIsAnyNoteActive] = useState<boolean | null>(null);
 
@@ -95,21 +91,6 @@ export function AppProvider(props: any) {
         isAnyNoteActiveFunc(allNotes, contextValue.actions.setIsAnyNoteActive);
       }
     }
-
-    // if (isRecycleBinEmpty === null) {
-    //   const storedIsRecycleBinEmpty = localStorage.getItem("isRecycleBinEmpty");
-    //   if (
-    //     storedIsRecycleBinEmpty === "false" ||
-    //     storedIsRecycleBinEmpty === "true"
-    //   ) {
-    //     setIsRecycleBinEmpty(JSON.parse(storedIsRecycleBinEmpty));
-    //   } else {
-    //     isRecycleBinEmptyFunc(
-    //       allNotes,
-    //       contextValue.actions.setIsRecycleBinEmpty
-    //     );
-    //   }
-    // }
   };
   useEffect(() => {
     setItem(setAllNotes, "allNotes");

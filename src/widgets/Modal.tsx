@@ -85,15 +85,17 @@ export default function Modal(props: {
                 href={
                   "https://www.youtube.com/channel/UCBX_-ls-dXuhFNSWSXcHrTA"
                 }
+                style={{ color: "#fff", marginBottom: 10, display: "block" }}
               >
-                <p style={{ color: "#fff", marginTop: 0 }}>Matt &amp; Matty</p>
+                Matt &amp; Matty
               </a>
               {"\n \n"}
               The YouTube video link: {"\n"}
-              <a href={"https://www.youtube.com/watch?v=VkPlQ4gjk8M"}>
-                <p style={{ color: "#fff", marginTop: 0 }}>
-                  https://www.youtube.com/watch?v={"\n"}VkPlQ4gjk8M
-                </p>
+              <a
+                href={"https://www.youtube.com/watch?v=VkPlQ4gjk8M"}
+                style={{ color: "#fff", marginBottom: 10, display: "block" }}
+              >
+                https://www.youtube.com/watch?v={"\n"}VkPlQ4gjk8M
               </a>
               {"\n \n"}They explained spaced repetition very well. So did you
               understand what spaced repetition is? It's crucial to use this app
@@ -107,17 +109,17 @@ export default function Modal(props: {
                 href={
                   "https://www.youtube.com/channel/UCClj0UjhdYaR-WR-RHBVOww"
                 }
+                style={{ color: "#fff", marginBottom: 10, display: "block" }}
               >
-                <p style={{ color: "#fff", marginTop: 0 }}>
-                  AMIT KAKKAR SPEAKS
-                </p>
+                AMIT KAKKAR SPEAKS
               </a>
               {"\n \n"}
               The YouTube video link: {"\n"}
-              <a href={"https://www.youtube.com/watch?v=OccJMq7AtSE"}>
-                <p style={{ color: "#fff", marginTop: 0 }}>
-                  https://www.youtube.com/watch?v={"\n"}OccJMq7AtSE
-                </p>
+              <a
+                href={"https://www.youtube.com/watch?v=OccJMq7AtSE"}
+                style={{ color: "#fff", marginBottom: 10, display: "block" }}
+              >
+                https://www.youtube.com/watch?v={"\n"}OccJMq7AtSE
               </a>
               {"\n"}
               {"\n"}
@@ -168,9 +170,7 @@ export default function Modal(props: {
                     color: "#fff",
                   }}
                 >
-                  {/* <p style={{ color: isReply ? "#ededed" : "#fff" }}> */}
                   {j.text}
-                  {/* </p> */}
                 </div>
               ))}
             </div>

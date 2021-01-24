@@ -7,9 +7,9 @@ import {
 } from "../AppContext/AppContext";
 import Dropdown from "../widgets/Dropdown";
 import { useNavigate } from "react-router";
-import { LogoAndVersion } from "../App";
 import { logoInBase64 } from "../util/util";
 import fbLogo from "../assets/icons/facebook.svg";
+import { LogoAndVersion } from "../widgets/LogoAndVersion";
 
 export default function Settings() {
   const [notifications, setNotifications] = useState<"On" | "Off">("Off");
@@ -134,6 +134,7 @@ export default function Settings() {
         <a
           href='https://www.facebook.com/www.neverforgetanything/'
           target='_blank'
+          rel='noreferrer'
         >
           <img
             style={{ width: 30, marginLeft: 10 }}
@@ -141,9 +142,7 @@ export default function Settings() {
             alt='Facebook page'
           />
         </a>
-        <span style={{ marginLeft: 10, marginBottom: 5 }}>
-          neverforgetanything
-        </span>
+        <span style={{ marginLeft: 10, marginBottom: 5 }}>Never Forget</span>
       </div>
       {window.screen.width < 768 && (
         <div style={{ width: "100vw" }}>
@@ -221,13 +220,6 @@ const Box = (props: iBox) => {
                   {boxInfo?.alertMsg}
                 </p>
               )}
-              {/* {Notification.permission === "granted" && boxInfo.notifications === 'On'
-                    ? "Notifications are active."
-                    : Notification.permission === "denied" && 
-                    ? "You have blocked notification permission."
-                    : Notification.permission === "default"
-                    ? "Please allow notification permission to receive notifications."
-                    : null} */}
             </div>
           </div>
           {desc && (
@@ -342,9 +334,10 @@ export const PrivacyPolicy = () => {
         SERVICE is provided by Sandip at no cost and is intended for use as is.
         This page is used to inform visitors regarding my policies with the
         collection, use, and disclosure of Personal Information if anyone
-        decided to use my Service. Never Forget does not collect any information
-        from the user. But Never Forget use Google analytics and they may
-        collect data as needed.{" "}
+        decided to use my Service. Never Forget does not collect any personal
+        information from the user. It collects non identity revealing metrics
+        and never Forget use Google analytics and they may collect data as
+        needed.{" "}
         <a href='https://policies.google.com/privacy?hl=en-US'>
           Google's privacy policy
         </a>

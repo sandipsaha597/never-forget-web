@@ -9,7 +9,6 @@ import {
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { AppContext, IAllNotes } from "../AppContext/AppContext";
 import Modal from "../widgets/Modal";
-import { rewardMsgs } from "../App";
 import fireCracker from "../assets/icons/fire-cracker.svg";
 import fireworks from "../assets/icons/fireworks.svg";
 import clapping from "../assets/icons/clapping.svg";
@@ -42,7 +41,9 @@ export default function Home() {
 
   useEffect(() => {
     currentRewardMsg.current =
-      rewardMsgs[Math.floor(Math.random() * rewardMsgs.length)];
+      constants.rewardMsgs[
+        Math.floor(Math.random() * constants.rewardMsgs.length)
+      ];
     document.title = "Home | Never Forget";
   }, []);
 
@@ -88,7 +89,9 @@ export default function Home() {
       setAllNotes(tempAllNotes);
       setTimeout(() => {
         currentRewardMsg.current =
-          rewardMsgs[Math.floor(Math.random() * rewardMsgs.length)];
+          constants.rewardMsgs[
+            Math.floor(Math.random() * constants.rewardMsgs.length)
+          ];
         setRewardMsgShow(false);
       }, rewardMsgTimeoutTime + 500);
     }, 10);
@@ -336,9 +339,7 @@ const ReviewBox = (props: {
             >
               <div style={{ display: "flex", alignItems: "center" }}>
                 <span style={{ color: "#ededed" }}>Skip</span>
-                {/* <Image source={require("../assets/icons/draw-check-mark.png")} /> */}
                 <img style={{ width: "30px" }} src={rightArrow} alt='skip' />
-                {/* <Image source={require("../assets/icons/draw-check-mark.png")} /> */}
               </div>
             </button>
           </div>
@@ -346,7 +347,6 @@ const ReviewBox = (props: {
             disabled={disabled}
             onMouseDown={() => markAsRevised(itemIndex, note.id)}
           >
-            {/* <p style={{marginRight: 10, fontSize: 20}} >Mark as read</p> */}
             <img
               style={{ width: "30px" }}
               src={drawCheckMark}

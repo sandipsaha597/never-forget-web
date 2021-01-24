@@ -2,6 +2,18 @@ import { add, differenceInSeconds, format } from "date-fns";
 
 export const constants = {
   mainColor: "#3178c6",
+  rewardMsgs: [
+    "Well Done! 👍",
+    "Bravo! 🌟",
+    "Keep up the good work! 🔥",
+    "Awesome! 👍",
+    "Great! 🌟",
+    "Hats off! 👍",
+    "Way to go! 🚀",
+    "You rock! 🎸",
+    "Nice going! 🚶",
+    "Good job! 💼",
+  ],
 };
 
 export const isAnyNoteActiveFunc = (allNotes: any, setIsAnyNoteActive: any) => {
