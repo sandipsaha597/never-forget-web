@@ -1,4 +1,4 @@
-const cacheName = 'v1.0.0'
+const cacheName = 'v1.0.1'
 
 self.addEventListener('activate', (e) => {
   //remove unwanted caches
@@ -16,9 +16,6 @@ self.addEventListener('activate', (e) => {
 })
 
 self.addEventListener('fetch', e => {
-  // e.respondWith(
-  //   fetch(e.request).catch(() => caches.match(e.request))
-  // )
   e.respondWith(
     fetch(e.request)
       .then(res => {
