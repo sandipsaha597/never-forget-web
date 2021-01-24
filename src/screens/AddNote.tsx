@@ -6,7 +6,11 @@ import { v4 as uuidv4 } from "uuid";
 import Modal from "../widgets/Modal";
 import done from "../assets/icons/done.svg";
 import leftArrow from "../assets/icons/left-arrow-white.svg";
-import { logoInBase64, schedulePushNotification } from "../util/util";
+import {
+  constants,
+  logoInBase64,
+  schedulePushNotification,
+} from "../util/util";
 
 export default function AddNote(props: {
   editNoteNumber: number;
@@ -22,8 +26,7 @@ export default function AddNote(props: {
 
   const {
     states: { subs, allNotes, isAnyNoteActive },
-    actions: { setAllNotes, setIsAnyNoteActive },
-    constants: { mainColor },
+    actions: { setSubs, setAllNotes, setIsAnyNoteActive },
   } = useContext<any>(AppContext);
   const [selected, setSelected] = useState(subs[0].title);
   const titleInputRef = useRef<any>();
@@ -125,7 +128,6 @@ export default function AddNote(props: {
   }, [addNoteActive]);
 
   useEffect(() => {
-    // window.removeEventListener("keydown", keyDownFunc);
     window.addEventListener("keydown", keyDownFunc);
   }, [addNoteActive]);
 
@@ -205,7 +207,7 @@ export default function AddNote(props: {
   return (
     <div
       style={{
-        backgroundColor: mainColor,
+        backgroundColor: constants.mainColor,
         height: addNoteActive ? "100vh" : "100px",
         width: "100%",
         boxSizing: "border-box",
@@ -222,7 +224,7 @@ export default function AddNote(props: {
           display: "flex",
           justifyContent: "space-between",
           width: addNoteActive ? "92%" : "100%",
-          backgroundColor: "#3178c6",
+          backgroundColor: constants.mainColor,
           height: addNoteActive ? "100px" : "0",
           overflow: "hidden",
           transition: ".4s ease-in-out",
@@ -299,8 +301,8 @@ export default function AddNote(props: {
             options={subs}
             selected={selected}
             setSelected={setSelected}
-            addInput
-            deleteAble
+            onAdd={setSubs}
+            onDelete={setSubs}
           />
           <div
             style={{

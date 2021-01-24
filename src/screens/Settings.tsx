@@ -7,12 +7,11 @@ import {
 } from "../AppContext/AppContext";
 import Dropdown from "../widgets/Dropdown";
 import { useNavigate } from "react-router";
-import { LogoAndVersion } from "../App";
 import { logoInBase64 } from "../util/util";
 import fbLogo from "../assets/icons/facebook.svg";
+import { LogoAndVersion } from "../widgets/LogoAndVersion";
 
 export default function Settings() {
-  // const [shared, setShared] = useState("none");
   const [notifications, setNotifications] = useState<"On" | "Off">("Off");
   const [alertMsg, setAlertMsg] = useState("");
 
@@ -75,7 +74,6 @@ export default function Settings() {
         boxInfo={{ notifications: notifications, alertMsg: alertMsg }}
         highlight
       />
-
       <Box
         heading='Backup'
         desc='Backup your data on google drive or in downloadable CSV or both. So you can switch device and still have your notes and data.'
@@ -101,7 +99,6 @@ export default function Settings() {
       <Box
         heading='What is Spaced Repetition?'
         onMouseDown={(val: string) => {
-          // setKnowSpacedRepetition(EnumSpacedRepetition.No);
           navigate("/what-is-spaced-repetition");
         }}
       />
@@ -110,8 +107,6 @@ export default function Settings() {
         heading='Contact Us'
         desc='sandipsaha564@gmail.com'
         onMouseDown={(val: string) => {
-          // Linking.openURL("mailto:sandipsaha564@gmail.com")
-          // window.location.href = "mailto:mail@example.org"
           if (window.screen.width < 992) {
             window.open("mailto:sandipsaha564@gmail.com", "_blank");
           } else {
@@ -134,10 +129,12 @@ export default function Settings() {
           navigate("/credits");
         }}
       />
+
       <div style={{ display: "flex", alignItems: "center" }}>
         <a
           href='https://www.facebook.com/www.neverforgetanything/'
           target='_blank'
+          rel='noreferrer'
         >
           <img
             style={{ width: 30, marginLeft: 10 }}
@@ -145,9 +142,7 @@ export default function Settings() {
             alt='Facebook page'
           />
         </a>
-        <span style={{ marginLeft: 10, marginBottom: 5 }}>
-          neverforgetanything
-        </span>
+        <span style={{ marginLeft: 10, marginBottom: 5 }}>Never Forget</span>
       </div>
       {window.screen.width < 768 && (
         <div style={{ width: "100vw" }}>
@@ -225,13 +220,6 @@ const Box = (props: iBox) => {
                   {boxInfo?.alertMsg}
                 </p>
               )}
-              {/* {Notification.permission === "granted" && boxInfo.notifications === 'On'
-                    ? "Notifications are active."
-                    : Notification.permission === "denied" && 
-                    ? "You have blocked notification permission."
-                    : Notification.permission === "default"
-                    ? "Please allow notification permission to receive notifications."
-                    : null} */}
             </div>
           </div>
           {desc && (
@@ -346,9 +334,10 @@ export const PrivacyPolicy = () => {
         SERVICE is provided by Sandip at no cost and is intended for use as is.
         This page is used to inform visitors regarding my policies with the
         collection, use, and disclosure of Personal Information if anyone
-        decided to use my Service. Never Forget does not collect any information
-        from the user. But Never Forget use Google analytics and they may
-        collect data as needed.{" "}
+        decided to use my Service. Never Forget does not collect any personal
+        information from the user. It collects non identity revealing metrics
+        and never Forget use Google analytics and they may collect data as
+        needed.{" "}
         <a href='https://policies.google.com/privacy?hl=en-US'>
           Google's privacy policy
         </a>
@@ -557,49 +546,6 @@ export const Credits = () => {
     </div>
   );
 };
-
-// const rescheduleNotifications = (setRescheduleNotificationsProgress: any) => {
-//   Notifications.getAllScheduledNotificationsAsync().then((allNotifications) => {
-//     const allNotificationsLength = allNotifications.length;
-//     allNotifications.forEach(async (v, i) => {
-//       if (!v.identifier.startsWith("SS")) {
-//         const body = v.content.body;
-//         const revisionDate = () => {
-//           let dateArray = v.identifier.split("-");
-//           return new Date(
-//             parseInt(dateArray[2]),
-//             parseInt(dateArray[1]) - 1,
-//             parseInt(dateArray[0])
-//           );
-//         };
-//         const trigger = differenceInSeconds(
-//           // add(startOfDay(new Date()), { days: 0, hours: 13, minutes: 11 }),
-//           // add(new Date(note.revisions[0]), { hours: 14, minutes: 18 }),
-//           add(revisionDate(), { hours: 6 }),
-//           new Date()
-//         );
-//         await Notifications.scheduleNotificationAsync({
-//           content: {
-//             title: "Review your notes, so you Never Forget them! 📔",
-//             body: body ?? "Something went wrong",
-//             data: { data: "goes here" },
-//           },
-//           identifier: format(revisionDate(), "dd-MM-yyyy"),
-//           trigger: { seconds: trigger },
-//         });
-
-//         if (i + 1 >= allNotificationsLength) {
-//           setRescheduleNotificationsProgress(false);
-//         } else {
-//           setRescheduleNotificationsProgress({
-//             index: i + 1,
-//             length: allNotificationsLength,
-//           });
-//         }
-//       }
-//     });
-//   });
-// };
 
 // interfaces
 

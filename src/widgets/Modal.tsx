@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { constants } from "../util/util";
 
 export default function Modal(props: {
   text: string;
@@ -54,7 +55,6 @@ export default function Modal(props: {
         textAlign: center ? "center" : "left",
         borderRadius: center ? 4 : 0,
         opacity: 1,
-        // margin: 10,
         width: center ? "auto" : "100%",
         overflowY: "scroll",
         height: scroll
@@ -62,7 +62,6 @@ export default function Modal(props: {
             ? "calc(100% - 80px)"
             : "80vh"
           : "auto",
-        // flex: 1,
         justifyContent: "flex-end",
         backgroundColor: center ? "transparent" : "#e0e0e0",
         padding: 10,
@@ -86,15 +85,17 @@ export default function Modal(props: {
                 href={
                   "https://www.youtube.com/channel/UCBX_-ls-dXuhFNSWSXcHrTA"
                 }
+                style={{ color: "#fff", marginBottom: 10, display: "block" }}
               >
-                <p style={{ color: "#fff", marginTop: 0 }}>Matt &amp; Matty</p>
+                Matt &amp; Matty
               </a>
               {"\n \n"}
               The YouTube video link: {"\n"}
-              <a href={"https://www.youtube.com/watch?v=VkPlQ4gjk8M"}>
-                <p style={{ color: "#fff", marginTop: 0 }}>
-                  https://www.youtube.com/watch?v={"\n"}VkPlQ4gjk8M
-                </p>
+              <a
+                href={"https://www.youtube.com/watch?v=VkPlQ4gjk8M"}
+                style={{ color: "#fff", marginBottom: 10, display: "block" }}
+              >
+                https://www.youtube.com/watch?v={"\n"}VkPlQ4gjk8M
               </a>
               {"\n \n"}They explained spaced repetition very well. So did you
               understand what spaced repetition is? It's crucial to use this app
@@ -108,17 +109,17 @@ export default function Modal(props: {
                 href={
                   "https://www.youtube.com/channel/UCClj0UjhdYaR-WR-RHBVOww"
                 }
+                style={{ color: "#fff", marginBottom: 10, display: "block" }}
               >
-                <p style={{ color: "#fff", marginTop: 0 }}>
-                  AMIT KAKKAR SPEAKS
-                </p>
+                AMIT KAKKAR SPEAKS
               </a>
               {"\n \n"}
               The YouTube video link: {"\n"}
-              <a href={"https://www.youtube.com/watch?v=OccJMq7AtSE"}>
-                <p style={{ color: "#fff", marginTop: 0 }}>
-                  https://www.youtube.com/watch?v={"\n"}OccJMq7AtSE
-                </p>
+              <a
+                href={"https://www.youtube.com/watch?v=OccJMq7AtSE"}
+                style={{ color: "#fff", marginBottom: 10, display: "block" }}
+              >
+                https://www.youtube.com/watch?v={"\n"}OccJMq7AtSE
               </a>
               {"\n"}
               {"\n"}
@@ -153,14 +154,13 @@ export default function Modal(props: {
             >
               {v.map((j: any, i2: number) => (
                 <div
-                  // activeOpacity={isReply && i1 === chat.length - 1 ? 0.7 : 1}
                   key={j.id}
                   onMouseDown={(e) =>
                     isReply && i1 === chat.length - 1 ? reply(j, i1, i2) : {}
                   }
                   className={isReply && i1 === chat.length - 1 ? "app-btn" : ""}
                   style={{
-                    backgroundColor: isReply ? "#3178c6" : "#2b2b2b",
+                    backgroundColor: isReply ? constants.mainColor : "#2b2b2b",
                     padding: isReply ? 10 : "12px 10px",
                     marginTop: 10,
                     cursor:
@@ -170,9 +170,7 @@ export default function Modal(props: {
                     color: "#fff",
                   }}
                 >
-                  {/* <p style={{ color: isReply ? "#ededed" : "#fff" }}> */}
                   {j.text}
-                  {/* </p> */}
                 </div>
               ))}
             </div>

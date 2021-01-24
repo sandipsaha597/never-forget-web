@@ -5,7 +5,11 @@ import { add, startOfDay } from "date-fns/esm";
 import { v4 as uuidv4 } from "uuid";
 import done from "../assets/icons/done.svg";
 import leftArrow from "../assets/icons/left-arrow-white.svg";
-import { logoInBase64, schedulePushNotification } from "../util/util";
+import {
+  constants,
+  logoInBase64,
+  schedulePushNotification,
+} from "../util/util";
 import Modal from "../widgets/Modal";
 import { useLocation } from "react-router";
 
@@ -31,8 +35,7 @@ export default function AddNoteMobile(props: {
 
   const {
     states: { subs, allNotes, isAnyNoteActive },
-    actions: { setAllNotes, setIsAnyNoteActive },
-    constants: { mainColor },
+    actions: { setSubs, setAllNotes, setIsAnyNoteActive },
   } = useContext<any>(AppContext);
   const [selected, setSelected] = useState(subs[0].title);
   const titleInputRef = useRef<any>();
@@ -129,22 +132,6 @@ export default function AddNoteMobile(props: {
     }
   }, [addNoteActive, firstNote]);
 
-  useEffect(() => {
-    //esc button
-    // BackHandler.addEventListener("hardwareBackPress", () => {
-    //   if (isAddNoteOpen.current) {
-    //     if (editNoeNumber >= 0) {
-    //       setTimeout(() => {
-    //         setTitle("");
-    //         setDesc("");
-    //         setEditNoteNumber(-1);
-    //       }, 1000);
-    //     }
-    //     return true;
-    //   }
-    // });
-  }, [editNoteNumber]);
-
   const addNote = () => {
     let allRevisions = [startOfDay(new Date())];
     for (let i = 0; i < pattern.length; i++) {
@@ -210,7 +197,7 @@ export default function AddNoteMobile(props: {
   return (
     <div
       style={{
-        backgroundColor: mainColor,
+        backgroundColor: constants.mainColor,
         boxSizing: "border-box",
         padding: "10px",
         transition: ".3s ease-in-out",
@@ -225,13 +212,10 @@ export default function AddNoteMobile(props: {
     >
       <div
         style={{
-          // backgroundColor: "#3178c6",
           boxSizing: "border-box",
           display: "flex",
           justifyContent: "space-between",
           padding: "10px",
-          // position: "relative",
-          // top: 0,
           transition: ".4s ease-in-out",
           width: "100%",
           zIndex: 100,
@@ -306,8 +290,8 @@ export default function AddNoteMobile(props: {
             options={subs}
             selected={selected}
             setSelected={setSelected}
-            addInput
-            deleteAble
+            onAdd={setSubs}
+            onDelete={setSubs}
           />
           <div
             style={{

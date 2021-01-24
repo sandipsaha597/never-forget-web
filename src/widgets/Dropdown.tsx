@@ -1,5 +1,4 @@
-import { useState, useContext } from "react";
-import { AppContext } from "../AppContext/AppContext";
+import { useState } from "react";
 import { v4 as uuidV4 } from "uuid";
 import arrowDown from "../assets/icons/arrow-down-sign-to-navigate.svg";
 import deleteSimple from "../assets/icons/delete-simple.svg";
@@ -13,16 +12,12 @@ export default function Dropdown(props: {
   }[];
   selected: string;
   setSelected: (val: string) => void;
-  addInput?: boolean;
-  deleteAble?: boolean;
+  onAdd?: any;
+  onDelete?: any;
 }) {
-  const { title, options, selected, setSelected, addInput, deleteAble } = props;
+  const { title, options, selected, setSelected, onAdd, onDelete } = props;
   const [addSubtext, setAddSubtext] = useState<string>("");
   const [dropdown, setDropdown] = useState<"Open" | "Close">("Close");
-
-  const {
-    actions: { setSubs },
-  } = useContext<any>(AppContext);
 
   return (
     <div style={{ display: "flex", position: "relative" }}>
@@ -31,8 +26,6 @@ export default function Dropdown(props: {
         style={{
           display: "flex",
           padding: 10,
-          marginTop: 10,
-          marginBottom: 10,
           margin: "10px 10px 10px 0",
           alignItems: "center",
           backgroundColor: "#fff",
@@ -69,7 +62,7 @@ export default function Dropdown(props: {
           border: dropdown === "Open" ? "2px solid #000" : "0px solid #000",
         }}
       >
-        {addInput && (
+        {onAdd && (
           <div style={{ display: "flex", alignItems: "center", padding: 10 }}>
             <input
               style={{
@@ -93,7 +86,7 @@ export default function Dropdown(props: {
                   id: uuidV4(),
                   title: addSubtext,
                 });
-                setSubs(tempSubs);
+                onAdd(tempSubs);
                 setAddSubtext("");
               }}
             >
@@ -128,14 +121,14 @@ export default function Dropdown(props: {
             >
               {v.title}
             </span>
-            {deleteAble && v.title !== "--None--" && (
+            {onDelete && v.title !== "--None--" && (
               <div>
                 <button
                   style={{ padding: 7 }}
                   onMouseDown={() => {
                     let tempSubs = [...options];
                     tempSubs = tempSubs.filter((j: any) => j.id !== v.id);
-                    setSubs(tempSubs);
+                    onDelete(tempSubs);
                   }}
                 >
                   <img

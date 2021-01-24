@@ -1,9 +1,16 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
-import { AppContext } from "../AppContext/AppContext";
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
+import { AppContext, saveAndUpdate } from "../AppContext/AppContext";
 import { format } from "date-fns";
 import { Masonry } from "masonic";
 
 import {
+  constants,
   isAnyNoteActiveFunc,
   isRecycleBinEmptyFunc,
   schedulePushNotification,
@@ -87,9 +94,12 @@ export default function AllNotes(props: {
   const [subjectFilterSelected, setSubjectFilterSelected] = useState("All");
   const [searchText, setSearchText] = useState<any>(false);
   const [notesToShow, setNotesToShow] = useState<any>([]);
+  const [isRecycleBinEmpty, setIsRecycleBinEmpty] = useState<boolean | null>(
+    null
+  );
   const {
-    states: { allNotes, subs, isAnyNoteActive, isRecycleBinEmpty },
-    actions: { setAllNotes, setIsAnyNoteActive, setIsRecycleBinEmpty },
+    states: { allNotes, subs, isAnyNoteActive },
+    actions: { setAllNotes, setIsAnyNoteActive },
   } = useContext<any>(AppContext);
   const searchInputRef = useRef<any>();
   const subjectFilterOptions = [
@@ -99,6 +109,26 @@ export default function AllNotes(props: {
     },
     ...subs,
   ];
+  const sNU = (val: any) => {
+    saveAndUpdate("isRecycleBinEmpty", setIsRecycleBinEmpty, val);
+  };
+  const retrieveIsRecycleBinEmptyStatus = useCallback(() => {
+    if (isRecycleBinEmpty === null) {
+      const storedIsRecycleBinEmpty = localStorage.getItem("isRecycleBinEmpty");
+      if (
+        storedIsRecycleBinEmpty === "false" ||
+        storedIsRecycleBinEmpty === "true"
+      ) {
+        setIsRecycleBinEmpty(JSON.parse(storedIsRecycleBinEmpty));
+      } else {
+        isRecycleBinEmptyFunc(allNotes, sNU);
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    retrieveIsRecycleBinEmptyStatus();
+  }, []);
   useEffect(() => {
     document.title = recycleBin
       ? "Recycle Bin | Never Forget"
@@ -126,35 +156,33 @@ export default function AllNotes(props: {
 
   const deleteNote = (index: any, id: any, note: any, type?: string) => {
     let tempAllNotes = [...allNotes];
-    // tempAllNotes = tempAllNotes.filter((v) => v.id !== id);
     if (type === "permanentDelete") {
       tempAllNotes[index].deleted = false;
       tempAllNotes.splice(index, 1);
       setAllNotes(tempAllNotes);
-      isRecycleBinEmptyFunc(tempAllNotes, setIsRecycleBinEmpty);
+      isRecycleBinEmptyFunc(tempAllNotes, sNU);
     } else {
       if (type === "restore") {
         tempAllNotes[index].deleted = false;
         setAllNotes(tempAllNotes);
         schedulePushNotification(note, false, note.title);
         setIsAnyNoteActive(true);
-        isRecycleBinEmptyFunc(tempAllNotes, setIsRecycleBinEmpty);
+        isRecycleBinEmptyFunc(tempAllNotes, sNU);
       } else {
         tempAllNotes[index].deleted = true;
         setAllNotes(tempAllNotes);
         schedulePushNotification(note, "delete", "");
         isAnyNoteActiveFunc(tempAllNotes, setIsAnyNoteActive);
-        setIsRecycleBinEmpty(false);
+        sNU(false);
       }
     }
   };
 
-  // Empty Recycle bin
   const deleteAll = () => {
     let tempAllNotes = [...allNotes];
     tempAllNotes = tempAllNotes.filter((v) => v.deleted !== true);
     setAllNotes(tempAllNotes);
-    isRecycleBinEmptyFunc(tempAllNotes, setIsRecycleBinEmpty);
+    isRecycleBinEmptyFunc(tempAllNotes, sNU);
   };
 
   const filter = (val: any) => {
@@ -199,20 +227,17 @@ export default function AllNotes(props: {
       {(isAnyNoteActive && allNotes.length !== 0) ||
       (recycleBin && allNotes.length !== 0) ? (
         recycleBin && isRecycleBinEmpty ? (
-          // <p>Recycle bin is empty</p>
           <NoNotes source={recycleBinIcon} text='Recycle bin is empty' />
         ) : (
           <div
             className='all-notes-wrapper'
             style={{
               backgroundColor: "#fff",
-              // position: "relative",
             }}
           >
             <div
               style={{
                 position: "sticky",
-                // position: "-webkit-sticky",
                 top: recycleBin || window.screen.width < 768 ? 0 : "100px",
                 background: "#fff",
                 display: "flex",
@@ -282,7 +307,7 @@ export default function AllNotes(props: {
                       boxSizing: "border-box",
                       position: "fixed",
                       top: searchText || searchText === "" ? 0 : -54,
-                      backgroundColor: "#3178c6",
+                      backgroundColor: constants.mainColor,
                       width: "100%",
                       padding: "13px 7px",
                       display: "flex",
@@ -293,13 +318,10 @@ export default function AllNotes(props: {
                   >
                     <button
                       onClick={() => {
-                        // searchInputRef?.current?.blur();
-
                         filter({
                           subject: subjectFilterSelected,
                           searchText: false,
                         });
-                        // searchFilter(false);
                       }}
                     >
                       <img
@@ -307,8 +329,6 @@ export default function AllNotes(props: {
                         src={leftArrow}
                         alt='close'
                       />
-
-                      {/* <AntDesign name='arrowleft' size={24} color='black' /> */}
                     </button>
                     <input
                       ref={searchInputRef}
@@ -340,94 +360,70 @@ export default function AllNotes(props: {
                 </>
               )}
             </div>
-            {
-              !recycleBin ? (
-                <Masonry
-                  className='masonry'
-                  // Provides the data for our grid items
-                  items={notesToShow}
-                  // Sets the minimum column width to 172px
-                  columnWidth={260}
-                  // Pre-renders 5 windows worth of content
-                  overscanBy={2}
-                  // This is the grid item component
-                  render={(props: any) =>
-                    !props.data.placeholder ? (
-                      <NoteBox
-                        itemIndex={props.data.index}
-                        editNote={(index) =>
-                          setEditNoteNumber && setEditNoteNumber(index)
-                        }
-                        deleteNote={deleteNote}
-                        {...props}
-                      />
-                    ) : (
-                      <div
-                        style={{
-                          height: "200px",
-                          opacity: 0,
-                          pointerEvents: "none",
-                        }}
-                      >
-                        placeholder
-                      </div>
-                    )
-                  }
-                />
-              ) : (
-                <Masonry
-                  // Provides the data for our grid items
-                  items={notesToShow}
-                  // Sets the minimum column width to 172px
-                  columnWidth={260}
-                  // Pre-renders 5 windows worth of content
-                  overscanBy={2}
-                  // This is the grid item component
-                  render={(props: any) =>
-                    !props.data.placeholder ? (
-                      <NoteBox
-                        recycleBin
-                        itemIndex={props.data.index}
-                        deleteNote={deleteNote}
-                        {...props}
-                      />
-                    ) : (
-                      <div
-                        style={{
-                          height: "200px",
-                          opacity: 0,
-                          pointerEvents: "none",
-                        }}
-                      >
-                        placeholder
-                      </div>
-                    )
-                  }
-                />
-              )
-              // allNotes.map((item: any, index: any) =>
-              //     !item.delete && item.show ? (
-              //       <NoteBox
-              //         note={item}
-              //         itemIndex={index}
-              //         deleteNote={deleteNote}
-              // editNote={(index) =>
-              //   setEditNoteNumber && setEditNoteNumber(index)
-              // }
-              //       />
-              //     ) : null
-              //   )
-              // allNotes.map((item: any, index: any) =>
-              //   item.delete && item.show ? (
-              //     <NoteBox
-              //       note={item}
-              //       itemIndex={index}
-              //       deleteNote={deleteNote}
-              //       recycleBin
-              //     />
-              //   ) : null
-              // )
-            }
+            {!recycleBin ? (
+              <Masonry
+                className='masonry'
+                // Provides the data for our grid items
+                items={notesToShow}
+                // Sets the minimum column width to 172px
+                columnWidth={260}
+                // Pre-renders 5 windows worth of content
+                overscanBy={2}
+                // This is the grid item component
+                render={(props: any) =>
+                  !props.data.placeholder ? (
+                    <NoteBox
+                      itemIndex={props.data.index}
+                      editNote={(index) =>
+                        setEditNoteNumber && setEditNoteNumber(index)
+                      }
+                      deleteNote={deleteNote}
+                      {...props}
+                    />
+                  ) : (
+                    <div
+                      style={{
+                        height: "200px",
+                        opacity: 0,
+                        pointerEvents: "none",
+                      }}
+                    >
+                      placeholder
+                    </div>
+                  )
+                }
+              />
+            ) : (
+              <Masonry
+                // Provides the data for our grid items
+                items={notesToShow}
+                // Sets the minimum column width to 172px
+                columnWidth={260}
+                // Pre-renders 5 windows worth of content
+                overscanBy={2}
+                // This is the grid item component
+                render={(props: any) =>
+                  !props.data.placeholder ? (
+                    <NoteBox
+                      recycleBin
+                      itemIndex={props.data.index}
+                      deleteNote={deleteNote}
+                      {...props}
+                    />
+                  ) : (
+                    <div
+                      style={{
+                        height: "200px",
+                        opacity: 0,
+                        pointerEvents: "none",
+                      }}
+                    >
+                      placeholder
+                    </div>
+                  )
+                }
+              />
+            )}
           </div>
         )
       ) : (
@@ -473,7 +469,6 @@ const NoteBox = (props: {
         border: "2px solid #000",
         padding: 10,
         borderRadius: 10,
-        // boxSizing: "border-box",
         margin: 10,
       }}
     >
@@ -583,7 +578,11 @@ const NoteBox = (props: {
           {recycleBin ? (
             <img style={{ width: "30px" }} src={deleteIcon} alt='delete' />
           ) : (
-            <img style={{ width: "30px" }} src={softDeleteIcon} alt='soft delete' />
+            <img
+              style={{ width: "30px" }}
+              src={softDeleteIcon}
+              alt='soft delete'
+            />
           )}
         </button>
       </div>

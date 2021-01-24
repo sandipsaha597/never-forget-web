@@ -1,12 +1,9 @@
-import { useContext, useEffect } from "react";
+import { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router";
-import { AppContext } from "../AppContext/AppContext";
 import icon404 from "../assets/icons/error-404.svg";
+import { constants } from "../util/util";
 
 export default function NotFound() {
-  const {
-    constants: { mainColor },
-  } = useContext<any>(AppContext);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -32,7 +29,7 @@ export default function NotFound() {
         style={{
           textDecoration: "none",
           color: "#fff",
-          background: mainColor,
+          background: constants.mainColor,
           padding: "10px 15px",
           border: "none",
           fontSize: "15px",
