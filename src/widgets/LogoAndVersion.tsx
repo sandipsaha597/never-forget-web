@@ -25,7 +25,7 @@ export const LogoAndVersion = () => {
           Never Forget
         </span>
       </div>
-      <div style={{ letterSpacing: "1px", margin: "5px 0 16px 0" }}>v1.0.1</div>
+      <div style={{ letterSpacing: "1px", margin: "5px 0 16px 0" }}>v1.0.2</div>
     </div>
   );
 };

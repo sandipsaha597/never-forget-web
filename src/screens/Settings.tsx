@@ -231,7 +231,7 @@ const Box = (props: iBox) => {
                 textAlign: "left",
               }}
             >
-              {desc}kk
+              {desc}
             </p>
           )}
           {comingSoon && (
@@ -283,7 +283,7 @@ const Box = (props: iBox) => {
                 textAlign: "left",
               }}
             >
-              {desc}ll
+              {desc}
             </p>
           )}
           {comingSoon && (
