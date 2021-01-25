@@ -1,6 +1,6 @@
 import { logoInBase64 } from "../util/util";
 
-export const LogoAndVersion = () => {
+export default function LogoAndVersion() {
   return (
     <div
       style={{ textAlign: "center", paddingTop: "15px" }}
@@ -28,4 +28,4 @@ export const LogoAndVersion = () => {
       <div style={{ letterSpacing: "1px", margin: "5px 0 16px 0" }}>v1.0.2</div>
     </div>
   );
-};
+}

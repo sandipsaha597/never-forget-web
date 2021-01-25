@@ -1,5 +1,5 @@
-import React, { useContext, useEffect, useState, lazy, Suspense } from "react";
-import { Link, useLocation } from "react-router-dom";
+import React, { lazy, Suspense, useContext, useEffect, useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Route, Routes } from "react-router-dom";
 
 import { AppContext } from "./AppContext/AppContext";
@@ -14,10 +14,9 @@ import notes from "./assets/icons/notes.svg";
 import settings from "./assets/icons/settings.svg";
 import Settings, { PrivacyPolicy, Credits } from "./screens/Settings";
 import plus from "../src/assets/icons/plus.svg";
-import { add, differenceInSeconds, startOfDay } from "date-fns";
 import { constants, logoInBase64 } from "./util/util";
-import NotFound from "./screens/NotFound";
-import { LogoAndVersion } from "./widgets/LogoAndVersion";
+const LogoAndVersion = lazy(() => import("./widgets/LogoAndVersion"));
+const NotFound = lazy(() => import("./screens/NotFound"));
 
 export default function Main() {
   const [rewardMsgShow, setRewardMsgShow] = useState(false);
@@ -28,9 +27,13 @@ export default function Main() {
     constants: { rewardMsgTimeoutTime },
   } = useContext<any>(AppContext);
   const location = useLocation();
+  const navigate = useNavigate();
   useEffect(() => {
     if (localStorage.getItem("firstNote") === "false") {
       noNotesNotification(isAnyNoteActive);
+    }
+    if (!isAnyNoteActive && window.location.pathname === "/") {
+      navigate("/all-notes");
     }
   }, [isAnyNoteActive]);
 
@@ -99,7 +102,11 @@ export default function Main() {
                   <span>Settings</span>
                 </Link>
               </div>
-              {window.screen.width >= 768 && <LogoAndVersion />}
+              {window.screen.width >= 768 && (
+                <Suspense fallback={<div>Never Forget</div>}>
+                  <LogoAndVersion />
+                </Suspense>
+              )}
             </nav>
 
             <main>
@@ -127,7 +134,14 @@ export default function Main() {
                 <Route path='/recycle-bin' element={<AllNotes recycleBin />} />
                 <Route path='/privacy-policy' element={<PrivacyPolicy />} />
                 <Route path='/credits' element={<Credits />} />
-                <Route path='/*' element={<NotFound />} />
+                <Route
+                  path='/*'
+                  element={
+                    <Suspense fallback={<div>Page not found</div>}>
+                      <NotFound />
+                    </Suspense>
+                  }
+                />
               </Routes>
             </main>
             {window.screen.width < 768 && (
@@ -174,6 +188,7 @@ export default function Main() {
 }
 
 const noNotesNotification = async (isAnyNoteActive: boolean) => {
+  console.log("run");
   if (JSON.parse(localStorage.getItem("notifications") || "") !== "On") {
     return;
   }
@@ -189,22 +204,25 @@ const noNotesNotification = async (isAnyNoteActive: boolean) => {
     noNotesNotification?.close();
   } else if (isAnyNoteActive === false) {
     if (!noNotesNotification) {
-      const trigger =
-        differenceInSeconds(
-          add(startOfDay(new Date()), { days: 1, hours: 6 }),
-          new Date()
-        ) * 1000;
-      if (Notification.permission !== "granted") {
-      } else {
-        reg?.showNotification("Your Note box is empty 📁", {
-          tag: "SS-EmptyNoteBox", // a unique ID
-          body: "Add notes so you Never Forget what's important to you!", // content of the push notification
-          // @ts-ignore
-          showTrigger: new TimestampTrigger(new Date().getTime() + trigger), // set the time for the push notification
-          badge: logoInBase64,
-          icon: logoInBase64,
-        });
-      }
+      import("date-fns").then((dataFns) => {
+        const trigger =
+          dataFns.differenceInSeconds(
+            dataFns.add(dataFns.startOfDay(new Date()), { days: 1, hours: 6 }),
+            new Date()
+          ) * 1000;
+        console.log(trigger);
+        if (Notification.permission !== "granted") {
+        } else {
+          reg?.showNotification("Your Note box is empty 📁", {
+            tag: "SS-EmptyNoteBox", // a unique ID
+            body: "Add notes so you Never Forget what's important to you!", // content of the push notification
+            // @ts-ignore
+            showTrigger: new TimestampTrigger(new Date().getTime() + trigger), // set the time for the push notification
+            badge: logoInBase64,
+            icon: logoInBase64,
+          });
+        }
+      });
     }
   }
 };

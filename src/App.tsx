@@ -42,11 +42,17 @@ export default function App() {
                 />
               }
             />
-            <Suspense fallback={<div>404 page</div>}>
-              {location.pathname !== "/what-is-spaced-repetition" && (
-                <Route path='/*' element={<NotFound />} />
-              )}
-            </Suspense>
+
+            {location.pathname !== "/what-is-spaced-repetition" && (
+              <Route
+                path='/*'
+                element={
+                  <Suspense fallback={<div>404 page</div>}>
+                    <NotFound />
+                  </Suspense>
+                }
+              />
+            )}
           </Routes>
         </div>
       ) : (

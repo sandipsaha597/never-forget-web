@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { lazy, Suspense, useEffect, useState } from "react";
 import {
   closeAllNotifications,
   scheduleAllNotifications,
@@ -9,7 +9,7 @@ import Dropdown from "../widgets/Dropdown";
 import { useNavigate } from "react-router";
 import { logoInBase64 } from "../util/util";
 import fbLogo from "../assets/icons/facebook.svg";
-import { LogoAndVersion } from "../widgets/LogoAndVersion";
+const LogoAndVersion = lazy(() => import("../widgets/LogoAndVersion"));
 
 export default function Settings() {
   const [notifications, setNotifications] = useState<"On" | "Off">("Off");
@@ -146,7 +146,9 @@ export default function Settings() {
       </div>
       {window.screen.width < 768 && (
         <div style={{ width: "100vw" }}>
-          <LogoAndVersion />
+          <Suspense fallback={<div>Never Forget</div>}>
+            <LogoAndVersion />
+          </Suspense>
         </div>
       )}
     </div>

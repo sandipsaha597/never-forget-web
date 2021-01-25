@@ -57,8 +57,9 @@ function sendToAnalytics(metric: any) {
 
   if (
     Object.keys(data).length !== 0 &&
-    !window.location.href.includes("localhost") &&
-    !window.location.href.includes("testing")
+    ((!window.location.href.includes("localhost") &&
+      !window.location.href.includes("testing")) ||
+      window.location.href.includes("show-analytics"))
   ) {
     const body = JSON.stringify(data);
     const url = "https://metrics300k.herokuapp.com/metrics";
