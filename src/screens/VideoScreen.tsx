@@ -123,14 +123,14 @@ So did you understand what spaced repetition is? It's crucial to use this app co
           className='video'
           style={{ display: selected === "English" ? "block" : "none" }}
         >
-          <Video url='https://www.youtube-nocookie.com/embed/VkPlQ4gjk8M?start=30&end=152' />
+          <Video url='https://www.youtube.com/embed/VkPlQ4gjk8M?start=30&end=152' />
         </div>
       ) : (
         <div
           className='video'
           style={{ display: selected !== "English" ? "block" : "none" }}
         >
-          <Video url='https://www.youtube-nocookie.com/embed/OccJMq7AtSE?start=655&end=920' />
+          <Video url='https://www.youtube.com/embed/OccJMq7AtSE?start=655&end=920' />
         </div>
       )}
 
